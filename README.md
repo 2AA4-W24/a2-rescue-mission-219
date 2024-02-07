@@ -1,9 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/OY6OZuzi)
-# [A2] Island ca.mcmaster.se2aa4.island.team00.Explorer
+# [A2] Island ca.mcmaster.se2aa4.island.team219.Explorer
 
 - Authors:
-  - [Firstname_1, Lastname_1](macid@mcmaster.ca) 
-  - [Firstname_2, Lastname_2](macid@mcmaster.ca)
+  - [Rayan, Nasrallah](nasrallr@mcmaster.ca) 
+  - [Moustafa, Moustafa](moustm4@mcmaster.ca)
   - [Firstname_3, Lastname_3](macid@mcmaster.ca)
 
 ## Product Description
