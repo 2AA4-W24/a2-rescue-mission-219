@@ -4,7 +4,7 @@
 - Authors:
   - [Rayan, Nasrallah](nasrallr@mcmaster.ca) 
   - [Moustafa, Moustafa](moustm4@mcmaster.ca)
-  - [Firstname_3, Lastname_3](macid@mcmaster.ca)
+  - [Mohaimen, Ibrahim](ibraha50@mcmaster.ca)
 
 ## Product Description
 
