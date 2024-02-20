@@ -15,11 +15,11 @@ public enum Turn {
         this.right = Turn.valueOf(right);
     }
 
-    public Turn left(Turn heading) {
+    public Turn left() {
         return this.left;   
     }
 
-    public Turn right(Turn heading) {
+    public Turn right() {
         return this.right;
     }
 

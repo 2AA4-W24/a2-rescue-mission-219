@@ -19,6 +19,10 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
 
+    private Turn currentDirection; 
+
+    private DroneController Drone;
+
     public JSONObject extras;
 
     @Override
@@ -29,43 +33,30 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
+        if (direction == "EAST"){
+            currentDirection = Turn.east;
+        } else if (direction == "SOUTH"){
+            currentDirection = Turn.south;
+        } else if (direction == "WEST"){
+            currentDirection = Turn.west;
+        } else if (direction == "NORTH"){
+            currentDirection = Turn.north;
+        }
+        Turn leftDirection = currentDirection.left();
+        Turn rightDirection = currentDirection.right();
+        System.out.println(currentDirection);
+        System.out.println(rightDirection);
+        System.out.println(leftDirection);
+
         logger.info("Battery level is {}", batteryLevel);
+
+        Drone = new DroneController(batteryLevel, currentDirection);
     }
 
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        
-        if (fly && num < 51) {
-            decision.put("action", "scan");
-            fly = false;
-        } else if (num < 51) {
-            decision.put("action", "fly");
-            fly = true;
-        } else if (num == 51) {
-            JSONObject parameters = new JSONObject().put("direction", "N");
-            decision.put("action", "echo").put("parameters", parameters);
-        } else if (num == 52) {
-            JSONObject parameters = new JSONObject().put("direction", "E");
-            decision.put("action", "echo").put("parameters", parameters);
-        } else if (num == 53) {
-            JSONObject parameters = new JSONObject().put("direction", "S");
-            decision.put("action", "echo").put("parameters", parameters);
-        } else if (num == 54){
-            range = extras.getInt("range");
-            logger.info("Range after echoing: {}", range);
-            JSONObject parameters = new JSONObject().put("direction", "S");
-            decision.put("action", "heading").put("parameters", parameters);
-        } else if (num > 54 && num <= (54 + 2*range + 2)) {
-            if ((num - 54) % 2 == 0) {
-                decision.put("action", "fly");
-            } else {
-                decision.put("action", "scan");
-            }
-        } else {
-            decision.put("action", "stop");
-        }
-        num++; 
+        decision = Drone.makeDecision();
         return decision.toString();
     }
 
@@ -81,8 +72,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
         extras = extraInfo; 
-        logger.info("Additional information received: {}", extraInfo);
-        
+        logger.info("Additional information received: {}", extraInfo);  
     }
 
     @Override
