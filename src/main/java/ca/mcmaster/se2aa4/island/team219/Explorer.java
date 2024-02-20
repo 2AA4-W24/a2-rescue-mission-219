@@ -11,10 +11,6 @@ import org.json.JSONTokener;
 
 public class Explorer implements IExplorerRaid {
 
-    boolean fly = true;
-    int num = 0;
-    int range = 0;
-
     private Translator translator = new Translator();
 
     private final Logger logger = LogManager.getLogger();
