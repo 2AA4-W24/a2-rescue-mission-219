@@ -12,7 +12,7 @@ public class DroneController {
         this.batteryLevel.decreaseBattery(info.getCost()); 
     }
 
-    public JSONObject giveDecision() {
+    public JSONObject makeDecision() {
         JSONObject decision = new JSONObject();
 
         if (this.batteryLevel.getBatteryLevel() <= 1) { 
