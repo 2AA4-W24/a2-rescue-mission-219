@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.team219;
 
 public enum Turn {
-    
+
     north("west","east"), 
     south("east","west"), 
     east("north","south"), 
@@ -15,11 +15,11 @@ public enum Turn {
         this.right = Turn.valueOf(right);
     }
 
-    public Turn left(Turn heading) {
-        return this.left;   
+    public Turn left() {
+        return this.left;
     }
 
-    public Turn right(Turn heading) {
+    public Turn right() {
         return this.right;
     }
 
