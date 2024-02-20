@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
-public class DroneController {
+public class DroneController implements Drone {
 
     private Information currentInformation; 
     private BatteryLevel batteryLevel; 
@@ -13,11 +13,13 @@ public class DroneController {
         this.batteryLevel = new BatteryLevel(battery);
     }
 
+    @Override
     public void getInfo(Information info) {
         this.currentInformation = info;
         this.batteryLevel.decreaseBattery(info.getCost()); 
     }
 
+    @Override
     public JSONObject makeDecision() {
         JSONObject decision = new JSONObject();
 
@@ -28,6 +30,7 @@ public class DroneController {
         return decision;
     }
 
+    @Override
     public JSONObject turnLeft(){
         JSONObject decision = new JSONObject();
         initialDirection = initialDirection.left();
@@ -36,6 +39,7 @@ public class DroneController {
         return decision;
     }
 
+    @Override
     public JSONObject turnRight(){
         JSONObject decision = new JSONObject();
         initialDirection = initialDirection.right();
