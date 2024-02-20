@@ -15,6 +15,8 @@ public class Explorer implements IExplorerRaid {
     int num = 0;
     int range = 0;
 
+    private Translator translator = new Translator();
+
     private final Logger logger = LogManager.getLogger();
 
     public JSONObject extras;
@@ -71,6 +73,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String s) {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
+        Information info = translator.translate(response);
         logger.info("** Response received:\n"+response.toString(2));
         Integer cost = response.getInt("cost");
         logger.info("The cost of the action was {}", cost);
