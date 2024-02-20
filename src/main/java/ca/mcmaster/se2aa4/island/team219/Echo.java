@@ -1,6 +1,4 @@
-package ca.mcmaster;
-
-import ca.mcmaster.se2aa4.island.team219.Information;
+package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
