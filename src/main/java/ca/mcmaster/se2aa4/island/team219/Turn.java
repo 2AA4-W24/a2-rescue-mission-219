@@ -15,8 +15,8 @@ public enum Turn {
         this.right = Turn.valueOf(right);
     }
 
-    public Turn left(Turn heading) {
-        return this.left;   
+    public Turn left() {
+        return this.left;
     }
 
     public Turn right() {
