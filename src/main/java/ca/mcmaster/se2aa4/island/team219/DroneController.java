@@ -27,20 +27,4 @@ public class DroneController {
         }
         return decision;
     }
-
-    public JSONObject turnLeft(){
-        JSONObject decision = new JSONObject();
-        initialDirection = initialDirection.left();
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", initialDirection.toString().toUpperCase()));
-        return decision;
-    }
-
-    public JSONObject turnRight(){
-        JSONObject decision = new JSONObject();
-        initialDirection = initialDirection.right();
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", initialDirection.toString().toUpperCase()));
-        return decision;
-    }
 }
