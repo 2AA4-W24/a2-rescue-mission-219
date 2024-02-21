@@ -8,17 +8,32 @@ public class Echo {
     public JSONObject extras;
 
     public void initializeExtras(Information info) {
-        extras = info.getExtrasJson();
+        if (!(info == null)){
+            extras = info.getExtrasJson();
+        } else {
+            extras = new JSONObject();
+        }
+        
     }
 
     public boolean isFound() {
-        String found = extras.getString("found");
-        landFound = "GROUND".equals(found);
+        if (extras.has("found")){
+            String found = extras.getString("found");
+            landFound = "GROUND".equals(found);
+        } else {
+            landFound = false;
+        }
         return landFound;
     }
 
     public int distance() {
-        int range = extras.getInt("range");
+        int range;
+        if (extras.has("range")){
+            range = extras.getInt("range");
+        }else{
+            range = 0;
+        }
+
         return range;
     }
 
