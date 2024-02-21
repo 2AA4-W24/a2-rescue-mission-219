@@ -65,6 +65,7 @@ public class Explorer implements IExplorerRaid {
             num++;
         } else {
             decision = Drone.makeDecision();
+            logger.info("The new battery level is " + Drone.getBatteryLevelDrone());
         }
         logger.info(decision.toString());
         return decision.toString();

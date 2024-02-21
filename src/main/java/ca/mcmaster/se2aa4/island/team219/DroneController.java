@@ -45,6 +45,11 @@ public class DroneController implements Drone {
     }
 
     @Override
+    public int getBatteryLevelDrone() {
+        return this.batteryLevel.getBatteryLevel();
+    }
+
+    @Override
     public JSONObject echoInAllDirections() {
 
         currentDirection = Turn.E; //currentdirection is null when we start, fix that
@@ -150,6 +155,7 @@ public class DroneController implements Drone {
         return decision;
     }
 
+    @Override
     public JSONObject echoTowards(Turn direction){
         JSONObject decision = new JSONObject();
         return decision;
