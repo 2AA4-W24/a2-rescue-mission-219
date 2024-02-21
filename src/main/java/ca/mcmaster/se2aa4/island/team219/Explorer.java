@@ -21,6 +21,10 @@ public class Explorer implements IExplorerRaid {
 
     public JSONObject extras;
 
+    private Information info;
+
+    private int num = 0;
+
     @Override
     public void initialize(String s) {
         logger.info("** Initializing the Exploration Command Center");
@@ -29,33 +33,12 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
-        if (direction == "EAST"){
-            currentDirection = Turn.east;
-        } else if (direction == "SOUTH"){
-            currentDirection = Turn.south;
-        } else if (direction == "WEST"){
-            currentDirection = Turn.west;
-        } else if (direction == "NORTH"){
-            currentDirection = Turn.north;
-        }
-        Turn leftDirection = currentDirection.left();
-        Turn rightDirection = currentDirection.right();
-        System.out.println(currentDirection);
-        System.out.println(rightDirection);
-        System.out.println(leftDirection);
-
         logger.info("Battery level is {}", batteryLevel);
-
+        currentDirection = Turn.E;
         Drone = new DroneController(batteryLevel, currentDirection);
+        logger.info("finished initializing");
+        
     }
-
-    @Override
-    public String takeDecision() {
-        JSONObject decision = new JSONObject();
-        decision = Drone.makeDecision();
-        return decision.toString();
-    }
-
 
     @Override
     public void acknowledgeResults(String s) {
@@ -68,8 +51,27 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
         extras = extraInfo; 
-        logger.info("Additional information received: {}", extraInfo);  
+        logger.info("Additional information received: {}", extraInfo); 
+        Drone.getInfo(info);
     }
+
+    @Override
+    public String takeDecision() {
+        JSONObject decision = new JSONObject();
+
+        if ( num == 0 ){
+            JSONObject parameters = new JSONObject().put("direction", "S");
+            decision.put("action", "echo").put("parameters", parameters);
+            num++;
+        } else {
+            decision = Drone.makeDecision();
+        }
+        logger.info(decision.toString());
+        return decision.toString();
+    }
+
+
+    
 
     @Override
     public String deliverFinalReport() {
