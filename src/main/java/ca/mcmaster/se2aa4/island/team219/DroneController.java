@@ -17,6 +17,7 @@ public class DroneController implements Drone {
     private boolean echoLeft;
     private int distanceToLand;
     private boolean goToLand;
+    private VirtualCoordinateMap map; //////
 
     private boolean scanned;
 
@@ -34,6 +35,7 @@ public class DroneController implements Drone {
         this.echoLeft = false;
         this.echoRight = false; 
         this.goToLand = false;
+        this.map = new VirtualCoordinateMap(direction); // Initialize with current direction
         echo = new Echo();
         logger.info("created echo");
     }
@@ -82,7 +84,7 @@ public class DroneController implements Drone {
         if (echoForward && echoRight && echoLeft) {
             echoAll = true;
         } 
-    
+
         return decision;
     }
     
@@ -103,11 +105,16 @@ public class DroneController implements Drone {
             this.goToLand = true;
             decision = turn(this.temporaryDirection);
 
+            map.turnRight();
+            logger.info("Drone moved. Current position: " + map.getCurrentPosition());
+
         } else if (!echoAll && !goToLand && !echo.isFound()){
             decision = echoInAllDirections();
 
         } else if (echoAll && !goToLand) {
             decision.put("action", "fly");
+            map.moveForward();
+            logger.info("Drone moved. Current position: " + map.getCurrentPosition());
             echoAll = false;
             echoRight = false;
             echoLeft = false;
@@ -116,6 +123,8 @@ public class DroneController implements Drone {
             if (distanceToLand != 0){
                 scanned = false;
                 decision.put("action", "fly"); 
+                map.moveForward();
+                logger.info("Drone moved. Current position: " + map.getCurrentPosition());
                 distanceToLand--;
             } else if (distanceToLand == 0 && scanned == false) {
                 decision.put("action", "scan");
