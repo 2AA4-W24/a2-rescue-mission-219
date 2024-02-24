@@ -24,7 +24,7 @@ public class DroneController implements Drone {
     private final Logger logger = LogManager.getLogger();
 
 
-    public DroneController(Integer battery, Turn direction){
+    public DroneController(Integer battery, Turn direction) {
         this.currentDirection = direction;
         logger.info("set direction");
         int batteryInt = battery.intValue(); 
@@ -51,32 +51,86 @@ public class DroneController implements Drone {
         return this.batteryLevel.getBatteryLevel();
     }
 
+    
+
+    @Override
+    public JSONObject makeDecision() {
+        JSONObject decision = new JSONObject();
+        decision = toLand();
+        return decision;
+    }
+
+    @Override
+    public JSONObject turn(Turn direction) {
+        JSONObject decision = new JSONObject();
+        currentDirection = direction;
+        decision.put("action", "heading");
+        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
+        return decision;
+    }
+    
+    @Override
+    public JSONObject turnLeft() {
+        JSONObject decision = new JSONObject();
+        currentDirection = currentDirection.left();
+        decision.put("action", "heading");
+        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
+        return decision;
+    }
+
+    @Override
+    public JSONObject turnRight() {
+        JSONObject decision = new JSONObject();
+        currentDirection = currentDirection.right();
+        decision.put("action", "heading");
+        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
+        return decision;
+    }
+
+    @Override
+    public JSONObject echoTowards(Turn direction) {
+        JSONObject decision = new JSONObject();
+        String forward = direction.toString();
+        JSONObject forwardJ = new JSONObject().put("direction", forward);
+        decision.put("action", "echo").put("parameters", forwardJ);
+        return decision;
+    }
+
+    @Override
+    public JSONObject echoLeft(Turn direction) {
+        JSONObject decision = new JSONObject();
+        String left = direction.left().toString();
+        JSONObject leftJ = new JSONObject().put("direction", left);
+        decision.put("action", "echo").put("parameters", leftJ);
+        return decision;
+    }
+
+    @Override
+    public JSONObject echoRight(Turn direction) {
+        JSONObject decision = new JSONObject();
+        String right = direction.right().toString();
+        JSONObject rightJ = new JSONObject().put("direction", right);
+        decision.put("action", "echo").put("parameters", rightJ);
+        return decision;
+    }
+
     @Override
     public JSONObject echoInAllDirections() {
 
         currentDirection = Turn.E; //currentdirection is null when we start, fix that
 
-        String forward = currentDirection.toString();
-        String right = currentDirection.right().toString();
-        String left = currentDirection.left().toString();
-
-        JSONObject forwardJ = new JSONObject().put("direction", forward);
-        JSONObject rightJ = new JSONObject().put("direction", right);
-        JSONObject leftJ = new JSONObject().put("direction", left);
-        //have to make all like this
-
         JSONObject decision = new JSONObject();
         
         if (!echoForward) {
-            decision.put("action", "echo").put("parameters", forwardJ); // make echoTowards method to make this simpler
+            decision = echoTowards(currentDirection);
             this.echoForward = true;
             this.temporaryDirection = this.currentDirection;
         } else if (!echoRight) {
-            decision.put("action", "echo").put("parameters", rightJ);
+            decision = echoRight(currentDirection);
             this.echoRight = true;
             this.temporaryDirection = this.currentDirection.right();
         } else if (!echoLeft) {
-            decision.put("action", "echo").put("parameters", leftJ);
+            decision = echoLeft(currentDirection);
             this.echoLeft = true;
             this.temporaryDirection = this.currentDirection.left();
         }
@@ -87,12 +141,9 @@ public class DroneController implements Drone {
 
         return decision;
     }
-    
 
     @Override
-    public JSONObject makeDecision() {
-
-
+    public JSONObject toLand() {
         JSONObject decision = new JSONObject();
 
         echo.initializeExtras(currentInformation);
@@ -100,7 +151,7 @@ public class DroneController implements Drone {
         if (this.batteryLevel.batteryLevelLow()) { 
             decision.put("action", "stop");
         
-        } else if (echo.isFound()){
+        } else if (echo.isFound()) {
             distanceToLand = echo.distance();
             this.goToLand = true;
             decision = turn(this.temporaryDirection);
@@ -119,7 +170,7 @@ public class DroneController implements Drone {
             echoRight = false;
             echoLeft = false;
 
-        } else if (goToLand){
+        } else if (goToLand) {
             if (distanceToLand != 0){
                 scanned = false;
                 decision.put("action", "fly"); 
@@ -137,36 +188,5 @@ public class DroneController implements Drone {
         return decision;
     }
 
-    @Override
-    public JSONObject turn(Turn direction){
-        JSONObject decision = new JSONObject();
-        currentDirection = direction;
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
-        return decision;
-    }
     
-    @Override
-    public JSONObject turnLeft(){
-        JSONObject decision = new JSONObject();
-        currentDirection = currentDirection.left();
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
-        return decision;
-    }
-
-    @Override
-    public JSONObject turnRight(){
-        JSONObject decision = new JSONObject();
-        currentDirection = currentDirection.right();
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
-        return decision;
-    }
-
-    @Override
-    public JSONObject echoTowards(Turn direction){
-        JSONObject decision = new JSONObject();
-        return decision;
-    }
 }

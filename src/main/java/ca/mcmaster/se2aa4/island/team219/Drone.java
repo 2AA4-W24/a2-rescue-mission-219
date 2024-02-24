@@ -12,4 +12,7 @@ public interface Drone {
     JSONObject turnRight();
     JSONObject echoInAllDirections();
     JSONObject echoTowards(Turn direction);
+    JSONObject echoLeft(Turn direction);
+    JSONObject echoRight(Turn direction);
+    JSONObject toLand();
 }

@@ -18,7 +18,7 @@ public class BatteryLevel {
     }
 
     public boolean batteryLevelLow(){
-        if (this.battery == 1){ //asuming stoping doesnt require any battery
+        if (this.battery == 30){ //asuming stoping requires this amount or less
             return true;
         }
         return false;

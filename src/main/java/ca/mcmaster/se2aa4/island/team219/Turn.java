@@ -31,7 +31,7 @@ public enum Turn {
             case S: return "S";
             case E: return "E";
             case W: return "W";
-            default: return "Unknown";
+            default: return "Direction";
         }
     }
 }
