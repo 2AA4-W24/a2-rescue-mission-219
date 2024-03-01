@@ -17,6 +17,7 @@ public class DroneController implements Drone {
     private boolean echoLeft;
     private int distanceToLand;
     private boolean goToLand;
+    private boolean firstRun;
     private VirtualCoordinateMap map; //////
 
     private boolean scanned;
@@ -35,6 +36,7 @@ public class DroneController implements Drone {
         this.echoLeft = false;
         this.echoRight = false; 
         this.goToLand = false;
+        this.firstRun = true;
         this.map = new VirtualCoordinateMap(direction); // Initialize with current direction
         echo = new Echo();
         logger.info("created echo");
@@ -55,8 +57,16 @@ public class DroneController implements Drone {
 
     @Override
     public JSONObject makeDecision() {
+
         JSONObject decision = new JSONObject();
-        decision = toLand();
+
+        if (firstRun){
+            decision = echoInAllDirections();
+            firstRun = false;
+        } else {
+            decision = toLand();
+        }
+        
         return decision;
     }
 
