@@ -23,7 +23,6 @@ public class Explorer implements IExplorerRaid {
 
     private Information info;
 
-    private int num = 0;
 
     @Override
     public void initialize(String s) {
@@ -58,16 +57,6 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        /* 
-        if ( num == 0 ){
-            JSONObject parameters = new JSONObject().put("direction", "S");
-            decision.put("action", "echo").put("parameters", parameters);
-            num++;
-        } else {
-            decision = Drone.makeDecision();
-            logger.info("The new battery level is " + Drone.getBatteryLevelDrone());
-        }
-        */
         decision = Drone.makeDecision();
         logger.info("The new battery level is " + Drone.getBatteryLevelDrone());
         logger.info(decision.toString());
