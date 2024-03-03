@@ -17,13 +17,12 @@ public class DroneController implements Drone {
     private boolean echoLeft;
     private int distanceToLand;
     private boolean goToLand;
-    private boolean firstRun;
-    private VirtualCoordinateMap map; //////
+    private VirtualCoordinateMap map;
+    private Turn oldDirection;
 
     private boolean scanned;
 
     private final Logger logger = LogManager.getLogger();
-
 
     public DroneController(Integer battery, Turn direction) {
         this.currentDirection = direction;
@@ -36,8 +35,7 @@ public class DroneController implements Drone {
         this.echoLeft = false;
         this.echoRight = false; 
         this.goToLand = false;
-        this.firstRun = true;
-        this.map = new VirtualCoordinateMap(direction); // Initialize with current direction
+        this.map = new VirtualCoordinateMap(direction);
         echo = new Echo();
         logger.info("created echo");
     }
@@ -53,29 +51,52 @@ public class DroneController implements Drone {
         return this.batteryLevel.getBatteryLevel();
     }
 
-    
-
     @Override
     public JSONObject makeDecision() {
-
         JSONObject decision = new JSONObject();
-
-        if (firstRun){
-            decision = echoInAllDirections();
-            firstRun = false;
-        } else {
-            decision = toLand();
-        }
-        
+        decision = toLand();
         return decision;
     }
 
     @Override
     public JSONObject turn(Turn direction) {
         JSONObject decision = new JSONObject();
+        oldDirection = currentDirection;
         currentDirection = direction;
         decision.put("action", "heading");
         decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
+        
+        if (currentDirection == oldDirection.right()) { 
+            map.turnRight(); 
+            logger.info("Turned right. New direction: " + map.getCurrentPosition());
+        } else if (currentDirection == oldDirection.left()) {
+            map.turnLeft(); 
+            logger.info("Turned left. New direction: " + map.getCurrentPosition());
+        }
+
+        return decision;
+    }
+
+    @Override
+    public JSONObject fly() {
+        JSONObject decision = new JSONObject();
+        decision.put("action", "fly");
+        map.moveForward();
+        logger.info("Moved forward. New direction: " + map.getCurrentPosition());
+        return decision;
+    }
+
+    @Override
+    public JSONObject stop() {
+        JSONObject decision = new JSONObject();
+        decision.put("action", "stop");
+        return decision;
+    }
+
+    @Override
+    public JSONObject scan() {
+        JSONObject decision = new JSONObject();
+        decision.put("action", "scan");
         return decision;
     }
     
@@ -159,23 +180,18 @@ public class DroneController implements Drone {
         echo.initializeExtras(currentInformation);
 
         if (this.batteryLevel.batteryLevelLow()) { 
-            decision.put("action", "stop");
+            decision = stop();
         
         } else if (echo.isFound()) {
             distanceToLand = echo.distance();
             this.goToLand = true;
-            decision = turn(this.temporaryDirection);
-
-            map.turnRight();
-            logger.info("Drone moved. Current position: " + map.getCurrentPosition());
+            decision = turn(temporaryDirection);
 
         } else if (!echoAll && !goToLand && !echo.isFound()){
             decision = echoInAllDirections();
 
         } else if (echoAll && !goToLand) {
-            decision.put("action", "fly");
-            map.moveForward();
-            logger.info("Drone moved. Current position: " + map.getCurrentPosition());
+            decision = fly();
             echoAll = false;
             echoRight = false;
             echoLeft = false;
@@ -183,20 +199,17 @@ public class DroneController implements Drone {
         } else if (goToLand) {
             if (distanceToLand != 0){
                 scanned = false;
-                decision.put("action", "fly"); 
-                map.moveForward();
-                logger.info("Drone moved. Current position: " + map.getCurrentPosition());
+                decision = fly();
                 distanceToLand--;
             } else if (distanceToLand == 0 && scanned == false) {
-                decision.put("action", "scan");
+                decision = scan();
                 scanned = true;
             } else if (scanned == true) {
-                decision.put("action", "stop");
+                decision = stop();
             }
         }
 
         return decision;
     }
 
-    
 }
