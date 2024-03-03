@@ -80,5 +80,13 @@ public class VirtualCoordinateMap {
     public String getCurrentPosition() {
         return "("  +x+  ","  +y+  ")";
     }
+
+    void storeCoordinates() { // will use later
+        //store important coordinates (creeks, emergency site) 
+    }
+
+    void calculateDistance() { // will use later
+        //calculate distance between creeks and emergency site
+    }
     
 }
