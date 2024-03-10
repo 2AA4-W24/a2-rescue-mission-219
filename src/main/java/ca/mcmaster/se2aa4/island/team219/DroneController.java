@@ -17,8 +17,19 @@ public class DroneController implements Drone {
     private boolean echoLeft;
     private int distanceToLand;
     private boolean goToLand;
+    private boolean firstRun;
+    private boolean uTurnComplete;
+    private boolean fly;
+    private boolean echoed;
+    private int uTurns;
+    private boolean missionToLand;
     private VirtualCoordinateMap map;
     private Turn oldDirection;
+    private String uTurnDirection;
+    private String echoeUntilOcean;
+    private int echoCounter;
+    private int gridSearch;
+    private boolean checkDistance;
 
     private boolean scanned;
 
@@ -35,9 +46,20 @@ public class DroneController implements Drone {
         this.echoLeft = false;
         this.echoRight = false; 
         this.goToLand = false;
-        this.map = new VirtualCoordinateMap(direction);
+        this.firstRun = true;
+        this.uTurnComplete = true;
+        this.missionToLand = false;
+        this.fly = false;
+        this.uTurns = 0;
+        this.echoed = false;
+        this.echoCounter = 0;
+        this.gridSearch = 0;
+        this.checkDistance = false;
+        this.map = new VirtualCoordinateMap(direction); // Initialize with current direction
         echo = new Echo();
         logger.info("created echo");
+        this.uTurnDirection = "left";
+        this.echoeUntilOcean = "left";
     }
 
     @Override
@@ -53,8 +75,18 @@ public class DroneController implements Drone {
 
     @Override
     public JSONObject makeDecision() {
+
         JSONObject decision = new JSONObject();
-        decision = toLand();
+
+        if (firstRun){
+            decision = echoInAllDirections();
+            firstRun = false;
+        } else if (!missionToLand) {
+            decision = toLand();
+        } else {
+            decision = scanLand();
+        }
+        
         return decision;
     }
 
@@ -106,6 +138,8 @@ public class DroneController implements Drone {
         currentDirection = currentDirection.left();
         decision.put("action", "heading");
         decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
+        map.turnLeft(); 
+        logger.info("Turned left. New direction: " + map.getCurrentPosition());
         return decision;
     }
 
@@ -115,6 +149,8 @@ public class DroneController implements Drone {
         currentDirection = currentDirection.right();
         decision.put("action", "heading");
         decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
+        map.turnRight(); 
+        logger.info("Turned right. New direction: " + map.getCurrentPosition());
         return decision;
     }
 
@@ -186,6 +222,13 @@ public class DroneController implements Drone {
             distanceToLand = echo.distance();
             this.goToLand = true;
             decision = turn(temporaryDirection);
+            if (temporaryDirection == currentDirection.left()){
+                uTurnDirection = "right";
+                echoeUntilOcean = "left";
+            }else{
+                uTurnDirection = "left";
+                echoeUntilOcean = "right";
+            }
 
         } else if (!echoAll && !goToLand && !echo.isFound()){
             decision = echoInAllDirections();
@@ -202,14 +245,139 @@ public class DroneController implements Drone {
                 decision = fly();
                 distanceToLand--;
             } else if (distanceToLand == 0 && scanned == false) {
-                decision = scan();
+                decision.put("action", "scan");
                 scanned = true;
-            } else if (scanned == true) {
-                decision = stop();
-            }
+                missionToLand = true;
+            }/* else if (scanned == true) {
+                decision.put("action", "stop");
+            } */
         }
 
         return decision;
+    }
+
+    public JSONObject scanLand() {
+        JSONObject decision = new JSONObject();
+
+        echo.initializeExtras(currentInformation);
+        
+        if (!uTurnComplete || (echoed && echo.outOfBounds())){
+            if (uTurnDirection == "left"){
+                if (uTurns == 0) {
+                    uTurnComplete = false;
+                    decision = turnLeft();
+                    uTurns++;
+                } else if (uTurns == 1) {
+                    decision = turnLeft();
+                    uTurns++;
+                } else if (uTurns == 2) {
+                    decision = scan();
+                    scanned = true;
+                    uTurnComplete = true;
+                    fly = false;
+                    uTurns = 0;
+                    echoed = false;
+                    uTurnDirection = "right";
+                }
+            } else if (uTurnDirection == "right"){
+                if (uTurns == 0) {
+                    uTurnComplete = false;
+                    decision = turnRight();
+                    uTurns++;
+                } else if (uTurns == 1) {
+                    decision = turnRight();
+                    uTurns++;
+                } else if (uTurns == 2) {
+                    decision = scan();
+                    scanned = true;
+                    uTurnComplete = true;
+                    fly = false;
+                    uTurns = 0;
+                    echoed = false;
+                    uTurnDirection = "left";
+                }
+            }
+        } else if (scanned && !fly && echo.groundIsFound()) {
+            decision = fly();
+            scanned = false;
+            fly = true;
+        } else if (!scanned && fly && !echo.groundIsFound()) {
+            decision = scan();
+            scanned = true;
+            fly = false;
+            echoCounter = 0;
+        /*} else if ( scanned && echo.groundIsFound()) {
+            decision = fly();
+            scanned = false;
+            fly = true; */
+        } else if ( scanned && !echo.groundIsFound()){
+            decision = echoTowards(currentDirection);
+            scanned = false;
+            fly = false;
+            echoed = true; 
+        } else if ( echoed && echo.isFound()) {
+            decision = fly();
+            scanned = false;
+            fly = true;
+            
+        } else if (echoed && !echo.isFound() && !checkDistance){
+            if (echoeUntilOcean == "left"){
+                decision = echoRight(currentDirection);
+            } else if (echoeUntilOcean == "right"){
+                decision = echoLeft(currentDirection);
+            }
+            checkDistance = true;
+        } else if ( echoed && !echo.isFound() && echoCounter < 1 && checkDistance && echo.distance() < 2){
+            decision = fly();
+            checkDistance = false;
+        } else if ( echoed && !echo.isFound() && echoCounter < 1 && checkDistance && echo.distance() >= 2){
+            echoCounter++;
+            if (uTurnDirection == "left"){
+                if (uTurns == 0) {
+                    uTurnComplete = false;
+                    decision = turnLeft();
+                    uTurns++;
+                } else if (uTurns == 1) {
+                    decision = turnLeft();
+                    uTurns++;
+                } else if (uTurns == 2) {
+                    decision = scan();
+                    scanned = true;
+                    uTurnComplete = true;
+                    fly = false;
+                    uTurns = 0;
+                    echoed = false;
+                    uTurnDirection = "right";
+                }
+            } else if (uTurnDirection == "right"){
+                if (uTurns == 0) {
+                    uTurnComplete = false;
+                    decision = turnRight();
+                    uTurns++;
+                } else if (uTurns == 1) {
+                    decision = turnRight();
+                    uTurns++;
+                } else if (uTurns == 2) {
+                    decision = scan();
+                    scanned = true;
+                    uTurnComplete = true;
+                    fly = false;
+                    uTurns = 0;
+                    echoed = false;
+                    uTurnDirection = "left";
+                }
+            }
+            echoeUntilOcean = uTurnDirection;
+            checkDistance = false;
+            
+        } else if (echoCounter > 1) {
+            //gridSearch++;
+            decision = stop();
+        }
+
+        return decision;
+
+        //if you visit y coordinate twice you stop
     }
 
 }
