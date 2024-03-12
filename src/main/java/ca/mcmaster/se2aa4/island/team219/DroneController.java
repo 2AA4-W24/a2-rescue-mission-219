@@ -88,12 +88,24 @@ public class DroneController implements Drone {
         return this.batteryLevel.getBatteryLevel();
     }
 
+    public boolean batteryLevelWarning(){
+        if (getBatteryLevelDrone() <= 30){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     @Override
     public JSONObject makeDecision() {
 
         JSONObject decision = new JSONObject();
 
-        if (firstRun){
+        logger.info("the battery level is "+ getBatteryLevelDrone());
+
+        if (batteryLevelWarning()){
+            decision = stop();
+        } else if (firstRun){
             decision = echoInAllDirections();
             firstRun = false;
         } else if (!missionToLand) {
@@ -105,9 +117,6 @@ public class DroneController implements Drone {
             decision = bigUTurn();
         } else if (!exploreIsland && islandHalvesExplored == 1){
             decision = scanLand();
-        } else if (islandHalvesExplored == 2){
-            //decision = bigUTurn();
-            decision = stop(); //instead of this make UTurn to original coordinates
         } else if (bigUTurnComplete & islandHalvesExplored == 2){
             decision = stop();
         }
@@ -209,7 +218,7 @@ public class DroneController implements Drone {
     @Override
     public JSONObject echoInAllDirections() {
 
-        currentDirection = Turn.E; //currentdirection is null when we start, fix that
+        //currentDirection = Turn.E; //currentdirection is null when we start, fix that
 
         JSONObject decision = new JSONObject();
         
@@ -244,10 +253,7 @@ public class DroneController implements Drone {
             distanceToLand = echo.distance();
         }
 
-        if (this.batteryLevel.batteryLevelLow()) { 
-            decision = stop();
-        
-        } else if (echo.isFound() && echoCounter == 0) {
+        if (echo.isFound() && echoCounter == 0) {
             distanceToLand = echo.distance();
             this.goToLand = true;
             decision = turn(temporaryDirection);
@@ -462,18 +468,9 @@ public class DroneController implements Drone {
             }
             echoeUntilOcean = uTurnDirection;
             checkDistance = false;
-            
-        /* } else if (outOfRangeCounter > 1) {
-            //gridSearch++;
-            logger.info("The counter is " + outOfRangeCounter + "and the u turn direction is " + uTurnDirection);
-            decision = echoTowards(currentDirection);
-            exploreIsland = true;
-            bigUTurnComplete = false;*/
         }
-        logger.info("distance to land is " + gridSearchDistance);
+        
         return decision;
-
-        //if you visit y coordinate twice you stop
     }
 
     public JSONObject bigUTurn() {
@@ -584,7 +581,7 @@ public class DroneController implements Drone {
                 }
             }
         }
-        //decision = stop();
+        
         return decision;
     }
     
