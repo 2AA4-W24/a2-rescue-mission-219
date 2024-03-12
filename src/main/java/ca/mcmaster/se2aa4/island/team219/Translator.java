@@ -8,4 +8,21 @@ public class Translator {
         return new Information(response.getInt("cost"), response.getJSONObject("extras"));
     }
 
+    public Turn translateDirection(String direction){
+
+        Turn initialDirection = Turn.E;
+
+        if (direction == "EAST"){
+            initialDirection = Turn.E;
+        } else if (direction == "WEST"){
+            initialDirection = Turn.W;
+        } else if (direction == "NORTH"){
+            initialDirection = Turn.N;
+        } else if (direction == "SOUTH"){
+            initialDirection = Turn.S;
+        }
+
+        return initialDirection;
+    }
+
 }

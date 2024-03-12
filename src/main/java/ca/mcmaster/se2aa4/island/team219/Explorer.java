@@ -33,7 +33,7 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
-        currentDirection = Turn.E;
+        currentDirection = translator.translateDirection(direction);
         Drone = new DroneController(batteryLevel, currentDirection);
         logger.info("finished initializing");
         
