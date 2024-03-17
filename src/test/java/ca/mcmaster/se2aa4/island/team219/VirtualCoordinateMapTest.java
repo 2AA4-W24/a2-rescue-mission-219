@@ -102,3 +102,7 @@ public class VirtualCoordinateMapTest {
         assertEquals("(2,2)", map.getCurrentPosition());
     }
 }
+
+
+// hello
+
