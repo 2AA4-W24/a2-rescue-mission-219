@@ -33,7 +33,7 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
-        currentDirection = Turn.E;
+        currentDirection = translator.translateDirection(direction);
         Drone = new DroneController(batteryLevel, currentDirection);
         logger.info("finished initializing");
         
@@ -52,6 +52,7 @@ public class Explorer implements IExplorerRaid {
         extras = extraInfo; 
         logger.info("Additional information received: {}", extraInfo); 
         Drone.getInfo(info);
+    
     }
 
     @Override
@@ -68,7 +69,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        logger.info("Closest creek ID: " + Drone.getClosestCreek());
+        return Drone.getClosestCreek();
     }
 
 }
