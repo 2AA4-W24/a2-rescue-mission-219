@@ -81,12 +81,17 @@ public class VirtualCoordinateMap {
         return "("  +x+  ","  +y+  ")";
     }
 
-    void storeCoordinates() { // will use later
-        //store important coordinates (creeks, emergency site) 
+    public int getCurrentX() {
+        return x;
     }
 
-    void calculateDistance() { // will use later
-        //calculate distance between creeks and emergency site
+    public int getCurrentY() {
+        return y;
     }
+
+    public Turn getDirection() {
+        return currentDirection;
+    }
+
     
 }
