@@ -52,6 +52,7 @@ public class Explorer implements IExplorerRaid {
         extras = extraInfo; 
         logger.info("Additional information received: {}", extraInfo); 
         Drone.getInfo(info);
+    
     }
 
     @Override
@@ -68,7 +69,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        logger.info(Drone.getClosestCreek());
+        return Drone.getClosestCreek();
     }
 
 }

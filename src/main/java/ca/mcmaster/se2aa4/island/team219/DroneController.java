@@ -14,6 +14,7 @@ public class DroneController implements Drone {
     private VirtualCoordinateMap map;
     private Turn oldDirection;
     
+    
     //make decision only
     private boolean checkedForSite; 
     private boolean firstRun;// only used in make decision
@@ -54,8 +55,15 @@ public class DroneController implements Drone {
     private boolean firstRowScan;
 
 
+
     private boolean turnedRight;
     private boolean turnedLeft;
+
+    public int emergencySiteCoordinatesX;
+    public int emergencySiteCoordinatesY;
+    public String creekCoordinates;
+    private int creekX;
+    private int creekY;
 
     private final Logger logger = LogManager.getLogger();
 
@@ -97,6 +105,13 @@ public class DroneController implements Drone {
         this.turnedLeft = false;
         this.turnedRight = false;
 
+        this.emergencySiteCoordinatesX = 0;
+        this.emergencySiteCoordinatesY = 0;
+        this.creekCoordinates = "";
+        this.creekX = 0;
+        this.creekY = 0;
+        
+
     }
 
     @Override
@@ -118,6 +133,10 @@ public class DroneController implements Drone {
         }
     }
 
+    public String getClosestCreek(){
+        return echo.calculateClosestCreek();
+    }
+
     @Override
     public JSONObject makeDecision() {
 
@@ -125,15 +144,29 @@ public class DroneController implements Drone {
 
         echo.initializeExtras(currentInformation);
 
-        if (checkedForSite){
-            if (echo.creekIsFound()){
-                logger.info("Found a creek");
-                decision = stop();
-            } else {
-                logger.info("No creek found");
+        if (checkedForSite) {
+            if (echo.creekIsFound()) {
+                creekX = map.getCurrentX();
+                creekY = map.getCurrentY();
+                echo.storeCoordinates(creekX,creekY);
+                logger.info(map.getCurrentX()+map.getCurrentY());
+            }
+            if (echo.emergencySiteIsFound()) {
+                emergencySiteCoordinatesX = map.getCurrentX();
+                emergencySiteCoordinatesY = map.getCurrentY();
+                echo.storeCoordinatesEmergency(emergencySiteCoordinatesX, emergencySiteCoordinatesY);
             }
             checkedForSite = false;
         }
+
+        //logger.info(echo.calculateClosestCreek());
+        logger.info(echo.getCreekIds());
+        logger.info(echo.getCreekx());
+        logger.info(echo.getCreeky());
+        logger.info(echo.emergencyXss());
+        logger.info(echo.emergencyYss());
+        logger.info("current direction is " + currentDirection);
+        logger.info("map direction is " + map.getDirection());
 
         logger.info("the battery level is "+ getBatteryLevelDrone());
 
