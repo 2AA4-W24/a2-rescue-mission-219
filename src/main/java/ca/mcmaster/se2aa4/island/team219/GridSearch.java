@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public class GridSearch extends Drone{
     private Information currentInformation = new Information(0, new JSONObject());
-    private AknowledgeResults data;
+    private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
     private Compass temporaryDirection;
@@ -43,7 +43,7 @@ public class GridSearch extends Drone{
         this.currentDirection = direction;
         this.batteryLevel = batteryLevel;
         this.map = new VirtualCoordinateMap(currentDirection, originalX, originalY); 
-        data = new AknowledgeResults();
+        data = new AcknowledgeResults();
 
         this.originalX = originalX;
         this.originalY = originalY;

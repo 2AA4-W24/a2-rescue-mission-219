@@ -7,7 +7,7 @@ import org.json.JSONObject;
 public class MakeDecision {
 
     private Information currentInformation = new Information(0, new JSONObject());
-    private AknowledgeResults data;
+    private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
     private boolean firstRun;
@@ -20,7 +20,7 @@ public class MakeDecision {
         this.currentDirection = direction;
         int batteryInt = battery.intValue(); 
         this.batteryLevel = new Battery(batteryInt);
-        data = new AknowledgeResults();
+        data = new AcknowledgeResults();
         this.firstRun = true;
         this.secondRun = true;
         this.droneToLand = new GoToLand(batteryLevel, currentDirection);

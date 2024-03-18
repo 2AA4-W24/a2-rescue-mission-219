@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AknowledgeResults {
+public class AcknowledgeResults {
 
     private boolean landFound = false;
     private boolean groundFound = false;
@@ -15,7 +15,6 @@ public class AknowledgeResults {
     private boolean creekFound = false;
     private boolean emergencySiteFound = false;
     public JSONObject extras;
-    
 
     private ArrayList<String> creekIds = new ArrayList<>();
     private ArrayList<Integer> listOfCreeksX = new ArrayList<>();
@@ -102,6 +101,23 @@ public class AknowledgeResults {
         return creekFound;
     }
 
+    public ArrayList<String> getCreekIds() {
+        return creekIds;
+    } 
+    public ArrayList<Integer> getCreekx() {
+        return listOfCreeksX;
+    } 
+    public ArrayList<Integer> getCreeky() {
+        return listOfCreeksY;
+    } 
+
+    public int emergencyXss() {
+        return emergencyX;
+    } 
+    
+    public int emergencyYss() {
+        return emergencyY;
+    } 
     
     public boolean emergencySiteIsFound() {
         if (extras.has("sites")) {
@@ -125,7 +141,6 @@ public class AknowledgeResults {
         emergencyY = y;
     }
 
-
     public String calculateClosestCreek() {
         Set<String> visitedCoordinates = new HashSet<>();
         closestIndex = -1;
@@ -136,35 +151,26 @@ public class AknowledgeResults {
             int y = listOfCreeksY.get(i);
             String coordinate = x + "," + y;
     
-            if (visitedCoordinates.contains(coordinate)) {
-                continue; 
-            }
-            visitedCoordinates.add(coordinate);
+            if (!visitedCoordinates.contains(coordinate)) {
+                visitedCoordinates.add(coordinate);
+                distance = Math.sqrt(Math.pow(x - emergencyX, 2) + Math.pow(y - emergencyY, 2));
     
-            double distance = Math.sqrt(Math.pow(x - emergencyX, 2) + Math.pow(y - emergencyY, 2));
-    
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = i;
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestIndex = i;
+                }
             }
         }
     
         if (closestIndex != -1) {
             return creekIds.get(closestIndex);
         } else {
-            return "No creek found"; 
+            return "No creek found";
         }
     }
 
     public int distance() {
-        int range;
-        if (extras.has("range")){
-            range = extras.getInt("range");
-        }else{
-            range = 0;
-        }
-
-        return range;
+        return extras.optInt("range", 0);
     }
 
 }

@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public class GoToLand extends Drone {
     private Information currentInformation = new Information(0, new JSONObject());
-    private AknowledgeResults data;
+    private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
     private Compass temporaryDirection;
@@ -32,7 +32,7 @@ public class GoToLand extends Drone {
         this.currentDirection = direction;
         this.batteryLevel = batteryLevel;
         this.map = new VirtualCoordinateMap(currentDirection, 0, 0); 
-        data = new AknowledgeResults();
+        data = new AcknowledgeResults();
     
         this.echoAll = false; 
         this.echoForward = false;
