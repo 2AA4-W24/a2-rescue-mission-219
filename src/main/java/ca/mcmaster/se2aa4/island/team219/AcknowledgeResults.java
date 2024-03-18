@@ -100,24 +100,6 @@ public class AcknowledgeResults {
         }
         return creekFound;
     }
-
-    public ArrayList<String> getCreekIds() {
-        return creekIds;
-    } 
-    public ArrayList<Integer> getCreekx() {
-        return listOfCreeksX;
-    } 
-    public ArrayList<Integer> getCreeky() {
-        return listOfCreeksY;
-    } 
-
-    public int emergencyXss() {
-        return emergencyX;
-    } 
-    
-    public int emergencyYss() {
-        return emergencyY;
-    } 
     
     public boolean emergencySiteIsFound() {
         if (extras.has("sites")) {
