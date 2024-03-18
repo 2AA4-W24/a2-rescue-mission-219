@@ -498,6 +498,6 @@ public class GridSearch extends Drone{
     }
 
     public String getClosestCreek() {
-        return data.calculateClosestCreek();
+        return data.getClosestCreek();
     }
 }
