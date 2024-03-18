@@ -10,84 +10,84 @@ public class VirtualCoordinateMapTest {
 
     @Test
     void testMoveForwardFacingEast() {
-        map = new VirtualCoordinateMap(Turn.E);
+        map = new VirtualCoordinateMap(Compass.E, 0, 0);
         map.moveForward();
         assertEquals("(1,0)", map.getCurrentPosition());
     }
 
     @Test
     void testMoveForwardFacingWest() {
-        map = new VirtualCoordinateMap(Turn.W);
+        map = new VirtualCoordinateMap(Compass.W, 0, 0);
         map.moveForward();
         assertEquals("(-1,0)", map.getCurrentPosition());
     }
 
     @Test
     void testMoveForwardFacingNorth() {
-        map = new VirtualCoordinateMap(Turn.N);
+        map = new VirtualCoordinateMap(Compass.N, 0, 0);
         map.moveForward();
         assertEquals("(0,1)", map.getCurrentPosition());
     }
 
     @Test
     void testMoveForwardFacingSouth() {
-        map = new VirtualCoordinateMap(Turn.S);
+        map = new VirtualCoordinateMap(Compass.S, 0, 0);
         map.moveForward();
         assertEquals("(0,-1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnRightFromEast() {
-        map = new VirtualCoordinateMap(Turn.E);
+        map = new VirtualCoordinateMap(Compass.E, 0, 0);
         map.turnRight();
         assertEquals("(1,-1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnLeftFromEast() {
-        map = new VirtualCoordinateMap(Turn.E);
+        map = new VirtualCoordinateMap(Compass.E, 0, 0);
         map.turnLeft();
         assertEquals("(1,1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnRightFromWest() {
-        map = new VirtualCoordinateMap(Turn.W);
+        map = new VirtualCoordinateMap(Compass.W, 0, 0);
         map.turnRight();
         assertEquals("(-1,1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnLeftFromWest() {
-        map = new VirtualCoordinateMap(Turn.W);
+        map = new VirtualCoordinateMap(Compass.W, 0, 0);
         map.turnLeft();
         assertEquals("(-1,-1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnRightFromNorth() {
-        map = new VirtualCoordinateMap(Turn.N);
+        map = new VirtualCoordinateMap(Compass.N, 0, 0);
         map.turnRight();
         assertEquals("(1,1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnLeftFromNorth() {
-        map = new VirtualCoordinateMap(Turn.N);
+        map = new VirtualCoordinateMap(Compass.N, 0, 0);
         map.turnLeft();
         assertEquals("(-1,1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnRightFromSouth() {
-        map = new VirtualCoordinateMap(Turn.S);
+        map = new VirtualCoordinateMap(Compass.S, 0, 0);
         map.turnRight();
         assertEquals("(-1,-1)", map.getCurrentPosition());
     }
 
     @Test
     void testTurnLeftFromSouth() {
-        map = new VirtualCoordinateMap(Turn.S);
+        map = new VirtualCoordinateMap(Compass.S, 0, 0);
         map.turnLeft();
     
         assertEquals("(1,-1)", map.getCurrentPosition());
@@ -95,7 +95,7 @@ public class VirtualCoordinateMapTest {
 
     @Test
     void testMultipleMovements() {
-        map = new VirtualCoordinateMap(Turn.N);
+        map = new VirtualCoordinateMap(Compass.N, 0, 0);
         map.moveForward();
         map.turnRight(); 
         map.moveForward(); 

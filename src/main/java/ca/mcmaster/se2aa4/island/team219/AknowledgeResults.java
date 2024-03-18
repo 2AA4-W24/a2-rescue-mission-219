@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Echo {
+public class AknowledgeResults {
 
     private boolean landFound = false;
     private boolean groundFound = false;
@@ -102,23 +102,6 @@ public class Echo {
         return creekFound;
     }
 
-    public ArrayList<String> getCreekIds() {
-        return creekIds;
-    } 
-    public ArrayList<Integer> getCreekx() {
-        return listOfCreeksX;
-    } 
-    public ArrayList<Integer> getCreeky() {
-        return listOfCreeksY;
-    } 
-
-    public int emergencyXss() {
-        return emergencyX;
-    } 
-    
-    public int emergencyYss() {
-        return emergencyY;
-    } 
     
     public boolean emergencySiteIsFound() {
         if (extras.has("sites")) {
@@ -169,13 +152,9 @@ public class Echo {
         if (closestIndex != -1) {
             return creekIds.get(closestIndex);
         } else {
-            return "No creek found";
+            return "No creek found"; 
         }
     }
-
-
-    
-    
 
     public int distance() {
         int range;

@@ -4,10 +4,12 @@ public class VirtualCoordinateMap {
     
     private int x = 0;
     private int y = 0;
-    private Turn currentDirection;
+    private Compass currentDirection;
 
-    public VirtualCoordinateMap(Turn direction) {
+    public VirtualCoordinateMap(Compass direction, int x, int y) {
         this.currentDirection = direction;
+        this.x = x;
+        this.y = y;
     }
 
     public void moveForward() {
@@ -89,7 +91,7 @@ public class VirtualCoordinateMap {
         return y;
     }
 
-    public Turn getDirection() {
+    public Compass getDirection() {
         return currentDirection;
     }
 

@@ -3,79 +3,79 @@ package ca.mcmaster.se2aa4.island.team219;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TurnTest {
+public class CompassTest {
     
-    private Turn direction;
+    private Compass direction;
 
     @Test
     void testTurnLeftFacingNorth() {
-        direction = Turn.N;
-        assertEquals(Turn.W, direction.left());
+        direction = Compass.N;
+        assertEquals(Compass.W, direction.left());
     }
 
     @Test
     void testTurnLeftFacingSouth() {
-        direction = Turn.S;
-        assertEquals(Turn.E, direction.left());
+        direction = Compass.S;
+        assertEquals(Compass.E, direction.left());
     }
 
     @Test
     void testTurnLeftFacingEast() {
-        direction = Turn.E;
-        assertEquals(Turn.N, direction.left());
+        direction = Compass.E;
+        assertEquals(Compass.N, direction.left());
     }
 
     @Test
     void testTurnLeftFacingWest() {
-        direction = Turn.W;
-        assertEquals(Turn.S, direction.left());
+        direction = Compass.W;
+        assertEquals(Compass.S, direction.left());
     }
 
     @Test
     void testTurnRightFacingNorth() {
-        direction = Turn.N;
-        assertEquals(Turn.E, direction.right());
+        direction = Compass.N;
+        assertEquals(Compass.E, direction.right());
     }
 
     @Test
     void testTurnRightFacingSouth() {
-        direction = Turn.S;
-        assertEquals(Turn.W, direction.right());
+        direction = Compass.S;
+        assertEquals(Compass.W, direction.right());
     }
 
     @Test
     void testTurnRightFacingEast() {
-        direction = Turn.E;
-        assertEquals(Turn.S, direction.right());
+        direction = Compass.E;
+        assertEquals(Compass.S, direction.right());
     }
 
     @Test
     void testTurnRightFacingWest() {
-        direction = Turn.W;
-        assertEquals(Turn.N, direction.right());
+        direction = Compass.W;
+        assertEquals(Compass.N, direction.right());
     }
 
     @Test
     void testDirectionToStringN() {
-        direction = Turn.N;
+        direction = Compass.N;
         assertEquals("N", direction.toString());
     }
 
     @Test
     void testDirectionToStringS() {
-        direction = Turn.S;
+        direction = Compass.S;
         assertEquals("S", direction.toString());
     }
 
     @Test
     void testDirectionToStringE() {
-        direction = Turn.E;
+        direction = Compass.E;
         assertEquals("E", direction.toString());
     }
 
     @Test
     void testDirectionToStringW() {
-        direction = Turn.W;
+        direction = Compass.W;
         assertEquals("W", direction.toString());
     }
 

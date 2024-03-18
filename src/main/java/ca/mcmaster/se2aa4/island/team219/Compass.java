@@ -1,25 +1,25 @@
 package ca.mcmaster.se2aa4.island.team219;
 
-public enum Turn {
+public enum Compass {
 
     N, S, E, W;
 
-    public Turn left() {
+    public Compass left() {
         switch(this) {
-            case N: return Turn.W;
-            case S: return Turn.E;
-            case E: return Turn.N;
-            case W: return Turn.S;
+            case N: return Compass.W;
+            case S: return Compass.E;
+            case E: return Compass.N;
+            case W: return Compass.S;
             default: return this;
         }
     }
 
-    public Turn right() {
+    public Compass right() {
         switch(this) {
-            case N: return Turn.E;
-            case S: return Turn.W;
-            case E: return Turn.S;
-            case W: return Turn.N;
+            case N: return Compass.E;
+            case S: return Compass.W;
+            case E: return Compass.S;
+            case W: return Compass.N;
             default: return this;
         }
     }
@@ -34,4 +34,5 @@ public enum Turn {
             default: return "Direction";
         }
     }
+    
 }

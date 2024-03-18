@@ -1,10 +1,10 @@
 package ca.mcmaster.se2aa4.island.team219;
 
-public class BatteryLevel {
+public class Battery {
 
     private int battery;
 
-    public BatteryLevel(int battery){
+    public Battery(int battery){
         this.battery = battery;
     }
 

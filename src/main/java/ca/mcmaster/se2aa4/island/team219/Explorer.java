@@ -12,17 +12,10 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private Translator translator = new Translator();
-
     private final Logger logger = LogManager.getLogger();
-
-    private Turn currentDirection; 
-
-    private DroneController Drone;
-
+    private Compass currentDirection; 
+    private MakeDecision Drone;
     public JSONObject extras;
-
-    private Information info;
-
 
     @Override
     public void initialize(String s) {
@@ -34,7 +27,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
         currentDirection = translator.translateDirection(direction);
-        Drone = new DroneController(batteryLevel, currentDirection);
+        Drone = new MakeDecision(batteryLevel, currentDirection);
         logger.info("finished initializing");
         
     }
@@ -52,7 +45,6 @@ public class Explorer implements IExplorerRaid {
         extras = extraInfo; 
         logger.info("Additional information received: {}", extraInfo); 
         Drone.getInfo(info);
-    
     }
 
     @Override
@@ -63,9 +55,6 @@ public class Explorer implements IExplorerRaid {
         logger.info(decision.toString());
         return decision.toString();
     }
-
-
-    
 
     @Override
     public String deliverFinalReport() {
