@@ -36,14 +36,6 @@ public class MakeDecision {
         return this.batteryLevel.getBatteryLevel();
     }
 
-    public boolean batteryLevelWarning(){
-        if (getBatteryLevelDrone() <= 30){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     public String getClosestCreek(){
         return droneGridSearch.getClosestCreek();
     }
@@ -70,7 +62,7 @@ public class MakeDecision {
         } else if (droneToLand.missionToLand()) {
             initializeGridSearch();
             droneGridSearch.getInfo(currentInformation);
-            decision = droneGridSearch.makeDecision();
+            decision = droneGridSearch.makeDecision(); 
         } else {
             decision = decision.put("action", "stop");
         }

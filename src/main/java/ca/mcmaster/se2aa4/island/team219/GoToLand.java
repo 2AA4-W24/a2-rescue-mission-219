@@ -58,6 +58,7 @@ public class GoToLand extends Drone {
         return this.batteryLevel.getBatteryLevel();
     }
 
+    @Override
     public boolean batteryLevelWarning(){
         if (getBatteryLevelDrone() <= 30){
             return true;
@@ -88,14 +89,6 @@ public class GoToLand extends Drone {
 
     public boolean missionToLand() {
         return missionToLand;
-    }
-
-    public int currentXCoordinate() {
-        return map.getCurrentX();
-    }
-
-    public int currentYCoordinate() {
-        return map.getCurrentY();
     }
 
     public Compass getCurrentDirection() {
@@ -170,11 +163,11 @@ public class GoToLand extends Drone {
             }
             
             if (temporaryDirection == currentDirection.left() || currentDirection == temporaryDirection){ 
-                uTurnDirection = "right";
-                echoeUntilOcean = "left";
-            }else{
                 uTurnDirection = "left";
                 echoeUntilOcean = "right";
+            }else{
+                uTurnDirection = "right";
+                echoeUntilOcean = "left";
             }
 
         } else if (!echoAll && !goToLand && !data.isFound()){

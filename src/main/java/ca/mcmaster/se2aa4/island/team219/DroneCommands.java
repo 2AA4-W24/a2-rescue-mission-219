@@ -14,4 +14,5 @@ public interface DroneCommands {
     JSONObject fly();
     JSONObject stop();
     JSONObject scan();
+    boolean batteryLevelWarning();
 }

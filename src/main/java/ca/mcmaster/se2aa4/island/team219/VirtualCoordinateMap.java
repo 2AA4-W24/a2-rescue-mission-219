@@ -2,8 +2,8 @@ package ca.mcmaster.se2aa4.island.team219;
 
 public class VirtualCoordinateMap {
     
-    private int x = 0;
-    private int y = 0;
+    private int x;
+    private int y;
     private Compass currentDirection;
 
     public VirtualCoordinateMap(Compass direction, int x, int y) {

@@ -9,7 +9,6 @@ public class GridSearch extends Drone{
     private Compass currentDirection;
     private Compass temporaryDirection;
     private VirtualCoordinateMap map;
-
     private boolean scanned;
     private boolean fly;
     private boolean echoed;
@@ -37,6 +36,7 @@ public class GridSearch extends Drone{
     private int creekY;
     private int emergencySiteCoordinatesX;
     private int emergencySiteCoordinatesY;
+    private boolean firstRun;
 
     public GridSearch(String uTurnDirection, String echoeUntilOcean, Battery batteryLevel, Compass direction, int originalX, int originalY) {
         this.scanned = true;
@@ -44,41 +44,29 @@ public class GridSearch extends Drone{
         this.batteryLevel = batteryLevel;
         this.map = new VirtualCoordinateMap(currentDirection, originalX, originalY); 
         data = new AcknowledgeResults();
-
         this.originalX = originalX;
         this.originalY = originalY;
-
         this.uTurnDirection = uTurnDirection;
         this.echoeUntilOcean = echoeUntilOcean;
-    
         this.uTurnComplete = true;
-        
         this.fly = false;
         this.uTurns = 0;
         this.echoed = false;
-        
         this.exploreIsland = false;
         this.outOfRangeCounter = 0;
         this.gridSearchDistance = 0;
         this.bigUTurnCounter = 0;
         this.checkDistance = false;
         this.bigUTurnComplete = true;
-        
         this.passedLand = false;
         this.echoedForward = false;
         this.islandHalvesExplored = 0;
         this.firstRowScan = false;
         this.distanceToLand = 0;
-
         this.turnedLeft = false;
         this.turnedRight = false;
-
-        this.creekX = 0;
-        this.creekY = 0;
-
-        this.emergencySiteCoordinatesX = 0;
-        this.emergencySiteCoordinatesY = 0;
-
+        this.firstRun = true;
+        
     }
     
     @Override
@@ -91,6 +79,7 @@ public class GridSearch extends Drone{
         return this.batteryLevel.getBatteryLevel();
     }
     
+    @Override
     public boolean batteryLevelWarning(){
         if (getBatteryLevelDrone() <= 30){
             return true;
@@ -114,28 +103,85 @@ public class GridSearch extends Drone{
         return scan();
     }
 
-    public int currentXCoordinate() {
-        return map.getCurrentX();
-    }
-
-    public int currentYCoordinate() {
-        return map.getCurrentY();
-    }
-
-    public String UTurnDirection() {
-        return uTurnDirection;
-    }
-
-    public String echoeUntilOcean() {
-        return echoeUntilOcean;
-    }
-
     public int islandHalvesExplored() {
         return islandHalvesExplored;
     }
 
     public boolean bigUTurnComplete() {
         return bigUTurnComplete;
+    }
+
+    public String getClosestCreek() {
+        return data.getClosestCreek();
+    }
+
+    @Override
+    public JSONObject makeDecision() {
+
+        JSONObject decision = new JSONObject();
+
+        data.initializeExtras(currentInformation);
+
+        if (checkedForSite) {
+            if (data.creekIsFound()) {
+                creekX = map.getCurrentX();
+                creekY = map.getCurrentY();
+                data.storeCoordinates(creekX,creekY);
+                
+            }
+            if (data.emergencySiteIsFound()) {
+                emergencySiteCoordinatesX = map.getCurrentX();
+                emergencySiteCoordinatesY = map.getCurrentY();
+                data.storeCoordinatesEmergency(emergencySiteCoordinatesX, emergencySiteCoordinatesY);
+            }
+            checkedForSite = false;
+        }
+
+        if (!exploreIsland && islandHalvesExplored == 0) {
+            decision = scanLand();
+        } else if (!bigUTurnComplete && islandHalvesExplored == 1){
+            decision = bigUTurn();
+        } else if (!exploreIsland && islandHalvesExplored == 1){
+            decision = scanLand();
+        } else if (!bigUTurnComplete && islandHalvesExplored == 2){
+            decision = bigUTurn();
+        } else if (!exploreIsland && islandHalvesExplored == 2){
+            decision = scanLand();
+        } else if (islandHalvesExplored == 3){
+            decision = stop();
+        }
+
+        if (decision.toString().contains("fly")){
+            map.moveForward();
+            
+        } else if (decision.toString().contains("heading")){
+            if (turnedRight == true){
+                currentDirection = currentDirection.right();
+                map.turnRight();
+                turnedRight = false;
+            } else if (turnedLeft == true){
+                currentDirection = currentDirection.left();
+                map.turnLeft();
+                turnedLeft = false;
+            }
+            
+        }
+
+        if (decision.toString().contains("scan") && firstRun) {
+            originalX = map.getCurrentX();
+            originalY = map.getCurrentY();
+            firstRun = false;
+        } 
+
+        if (batteryLevelWarning()){
+            decision = stop();
+        }
+
+        if (islandHalvesExplored > 1 & originalX == map.getCurrentX() && originalY == map.getCurrentY()) {
+            decision = stop();
+        }
+        
+        return decision;
     }
 
     public JSONObject scanLand() {
@@ -438,66 +484,4 @@ public class GridSearch extends Drone{
         return decision;
     }
 
-    @Override
-    public JSONObject makeDecision() {
-
-        JSONObject decision = new JSONObject();
-
-        data.initializeExtras(currentInformation);
-
-        if (checkedForSite) {
-            if (data.creekIsFound()) {
-                creekX = map.getCurrentX();
-                creekY = map.getCurrentY();
-                data.storeCoordinates(creekX,creekY);
-                
-            }
-            if (data.emergencySiteIsFound()) {
-                emergencySiteCoordinatesX = map.getCurrentX();
-                emergencySiteCoordinatesY = map.getCurrentY();
-                data.storeCoordinatesEmergency(emergencySiteCoordinatesX, emergencySiteCoordinatesY);
-            }
-            checkedForSite = false;
-        }
-
-        if (!exploreIsland && islandHalvesExplored == 0) {
-            decision = scanLand();
-        } else if (!bigUTurnComplete && islandHalvesExplored == 1){
-            decision = bigUTurn();
-        } else if (!exploreIsland && islandHalvesExplored == 1){
-            decision = scanLand();
-        } else if (!bigUTurnComplete && islandHalvesExplored == 2){
-            decision = bigUTurn();
-        } else if (!exploreIsland && islandHalvesExplored == 2){
-            decision = scanLand();
-        } else if (islandHalvesExplored == 3 || (originalX == map.getCurrentX() && originalY == map.getCurrentY())){
-            decision = stop();
-        }
-
-        if (decision.toString().contains("fly")){
-            map.moveForward();
-            
-        } else if (decision.toString().contains("heading")){
-            if (turnedRight == true){
-                currentDirection = currentDirection.right();
-                map.turnRight();
-                turnedRight = false;
-            } else if (turnedLeft == true){
-                currentDirection = currentDirection.left();
-                map.turnLeft();
-                turnedLeft = false;
-            }
-            
-        }
-
-        if (batteryLevelWarning()){
-            decision = stop();
-        }
-        
-        return decision;
-    }
-
-    public String getClosestCreek() {
-        return data.getClosestCreek();
-    }
 }
