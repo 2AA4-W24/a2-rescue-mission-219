@@ -11,7 +11,6 @@ public class FlyState implements State {
     public JSONObject stateChange(GridSearch drone, Information currentInformation) {
 
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
 
@@ -27,4 +26,5 @@ public class FlyState implements State {
         
         return decision;
     } 
+    
 }

@@ -11,7 +11,6 @@ public class EchoRightState implements ToLandState {
     public JSONObject stateChange(GoToLand drone, Information currentInformation) {
 
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
 
@@ -21,9 +20,11 @@ public class EchoRightState implements ToLandState {
             drone.distanceToLand--;
             decision = drone.turnRightToLand();
         } else if (!data.isFound()) {
-            if (data.distance() <= 10) {
+
+            if (data.distance() <= 2) {
                 drone.dontEchoRight = true;
             }
+
             drone.switchState(new EchoLeftState());
             String forward = drone.getCurrentDirection().left().toString();
             JSONObject forwardJ = new JSONObject().put("direction", forward);
@@ -35,9 +36,8 @@ public class EchoRightState implements ToLandState {
             }
 
         }
-
-
-
+        
         return decision;
     } 
+
 }

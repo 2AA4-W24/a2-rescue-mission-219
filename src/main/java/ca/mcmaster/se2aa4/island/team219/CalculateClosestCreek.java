@@ -9,12 +9,11 @@ public class CalculateClosestCreek {
     private ArrayList<String> creekIds;
     private ArrayList<Integer> listOfCreeksX;
     private ArrayList<Integer> listOfCreeksY;
-    public int emergencyX;
-    public int emergencyY;
-    public int indexOfClosestCreek;
-    public int closestIndex = -1;
-    double minDistance = Double.MAX_VALUE;
-    double distance = 0;
+    private int emergencyX;
+    private int emergencyY;
+    private int closestIndex = -1;
+    private double minDistance = Double.MAX_VALUE;
+    private double distance = 0;
     
     public CalculateClosestCreek(ArrayList<Integer> listOfCreeksX, ArrayList<Integer> listOfCreeksY, ArrayList<String> creekIds, int emergencyX, int emergencyY) {
         this.listOfCreeksX = listOfCreeksX;
@@ -25,9 +24,11 @@ public class CalculateClosestCreek {
     }
 
     public String calculateClosestCreek() {
+
         Set<String> visitedCoordinates = new HashSet<>();
     
         for (int i = 0; i < listOfCreeksX.size(); i++) {
+
             int x = listOfCreeksX.get(i);
             int y = listOfCreeksY.get(i);
             String coordinate = x + "," + y;
@@ -41,6 +42,7 @@ public class CalculateClosestCreek {
                     closestIndex = i;
                 }
             }
+
         }
     
         if (closestIndex != -1) {
@@ -48,5 +50,7 @@ public class CalculateClosestCreek {
         } else {
             return "No creek found";
         }
+
     }
+    
 }

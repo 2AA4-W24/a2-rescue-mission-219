@@ -9,15 +9,12 @@ public class TurnToLandState implements ToLandState {
 
     @Override
     public JSONObject stateChange(GoToLand drone, Information currentInformation) {
-
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
-
         decision = drone.scanToLand();
         drone.missionToLand = true;
-
         return decision;
     } 
+
 }

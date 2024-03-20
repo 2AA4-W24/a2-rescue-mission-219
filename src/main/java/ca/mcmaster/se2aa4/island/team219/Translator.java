@@ -11,7 +11,6 @@ public class Translator {
     }
 
     public Compass translateDirection(String direction){
-    
         if (direction.equals("E")){
             currentDirection = Compass.E;
         } else if (direction.equals("W")){
@@ -23,6 +22,6 @@ public class Translator {
         }
     
         return currentDirection;
-    }
+    }   
     
 }

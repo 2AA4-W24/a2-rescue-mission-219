@@ -11,11 +11,10 @@ public class FlyForwardState implements ToLandState {
     public JSONObject stateChange(GoToLand drone, Information currentInformation) {
 
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
 
-        if (drone.dontEchoRight && !drone.dontEchoLeft){
+        if (drone.dontEchoRight && !drone.dontEchoLeft) {
             drone.switchState(new EchoLeftState());
             String forward = drone.getCurrentDirection().left().toString();
             JSONObject forwardJ = new JSONObject().put("direction", forward);
@@ -26,8 +25,8 @@ public class FlyForwardState implements ToLandState {
             JSONObject forwardJ = new JSONObject().put("direction", forward);
             decision.put("action", "echo").put("parameters", forwardJ);
         }
-
-
+        
         return decision;
     } 
+
 }

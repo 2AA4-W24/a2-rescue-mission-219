@@ -3,7 +3,6 @@ package ca.mcmaster.se2aa4.island.team219;
 import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -15,8 +14,8 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private Compass currentDirection; 
     private MakeDecision Drone;
-    public JSONObject extras;
     private HeadingTranslator headingTranslator = new HeadingTranslator();
+    public JSONObject extras;
 
     @Override
     public void initialize(String s) {
@@ -30,7 +29,6 @@ public class Explorer implements IExplorerRaid {
         currentDirection = headingTranslator.translateDirection(direction);
         Drone = new MakeDecision(batteryLevel, currentDirection);
         logger.info("finished initializing");
-        
     }
 
     @Override

@@ -9,18 +9,14 @@ public class StartingState implements ToLandState {
 
     @Override
     public JSONObject stateChange(GoToLand drone, Information currentInformation) {
-
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
-
         String forward = drone.getCurrentDirection().toString();
         JSONObject forwardJ = new JSONObject().put("direction", forward);
         decision.put("action", "echo").put("parameters", forwardJ);
-
         drone.switchState(new EchoForwardState());
-
         return decision;
     } 
+
 }

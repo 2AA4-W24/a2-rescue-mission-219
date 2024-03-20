@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.team219;
 
 public class VirtualCoordinateMap {
-    
+
     private int x;
     private int y;
     private Compass currentDirection;
@@ -79,10 +79,6 @@ public class VirtualCoordinateMap {
         currentDirection = currentDirection.right();
     }
 
-    public String getCurrentPosition() {
-        return "("  +x+  ","  +y+  ")";
-    }
-
     public int getCurrentX() {
         return x;
     }
@@ -90,10 +86,5 @@ public class VirtualCoordinateMap {
     public int getCurrentY() {
         return y;
     }
-
-    public Compass getDirection() {
-        return currentDirection;
-    }
-
     
 }

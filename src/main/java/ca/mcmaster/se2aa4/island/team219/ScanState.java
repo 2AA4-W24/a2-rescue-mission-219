@@ -9,8 +9,8 @@ public class ScanState implements State {
 
     @Override
     public JSONObject stateChange(GridSearch drone, Information currentInformation) {
-        JSONObject decision = new JSONObject();
         
+        JSONObject decision = new JSONObject();
         this.info = currentInformation;
         data.initializeExtras(info);
         
@@ -24,6 +24,8 @@ public class ScanState implements State {
             JSONObject forwardJ = new JSONObject().put("direction", forward);
             decision.put("action", "echo").put("parameters", forwardJ);
         }
+
         return decision;
     } 
+    
 }

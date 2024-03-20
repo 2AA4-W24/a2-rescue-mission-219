@@ -5,18 +5,17 @@ import org.json.JSONObject;
 public class BigUTurnState implements State {
 
     private AcknowledgeResults data = new AcknowledgeResults();
-
     private Information info = new Information(0, new JSONObject());
 
     @Override
     public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
-
         data.initializeExtras(info);
         
         if (drone.uTurnDirection.equals("right")) {
+            
             if (drone.uTurns == 0) {
                 decision = drone.turnLeftGridSearch();
                 drone.uTurns++;
@@ -38,7 +37,9 @@ public class BigUTurnState implements State {
                 drone.uTurnDirection = "right";
                 drone.islandHalvesExplored++;
             }
+
         } else if (drone.uTurnDirection.equals("left")) {
+
             if (drone.uTurns == 0) {
                 decision = drone.turnRightGridSearch();
                 drone.uTurns++;
@@ -59,9 +60,10 @@ public class BigUTurnState implements State {
                 drone.uTurns = 0;
                 drone.uTurnDirection = "left";
             }
-        }
 
+        }
         
         return decision;
     } 
+
 }

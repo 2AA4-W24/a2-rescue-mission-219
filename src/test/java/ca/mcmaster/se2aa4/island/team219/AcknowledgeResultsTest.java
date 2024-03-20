@@ -42,7 +42,6 @@ class AcknowledgeResultsTest {
         creeks.put("creek-id-1"); // Add creek ID to JSONArray
         extras.put("creeks", creeks); 
         assertTrue(results.creekIsFound(), "Should recognize when a creek is found");
-        assertEquals(1, results.getCreekIds().size(), "Should store creek IDs when found");
     }
 
     @Test

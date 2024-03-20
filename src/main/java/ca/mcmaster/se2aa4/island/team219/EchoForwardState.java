@@ -11,7 +11,6 @@ public class EchoForwardState implements ToLandState {
     public JSONObject stateChange(GoToLand drone, Information currentInformation) {
 
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
 
@@ -25,11 +24,9 @@ public class EchoForwardState implements ToLandState {
             String forward = drone.getCurrentDirection().right().toString();
             JSONObject forwardJ = new JSONObject().put("direction", forward);
             decision.put("action", "echo").put("parameters", forwardJ);
-
         }
-
-
-
+        
         return decision;
     } 
+    
 }

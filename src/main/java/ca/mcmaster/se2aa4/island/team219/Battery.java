@@ -4,21 +4,20 @@ public class Battery {
 
     private int battery;
 
-    public Battery(int battery){
+    public Battery(int battery) {
         this.battery = battery;
     }
 
-    public int getBatteryLevel(){
+    public int getBatteryLevel() {
         return battery;
     }
 
-    public void decreaseBattery(int cost){
+    public void decreaseBattery(int cost) {
         battery = battery - cost;
-
     }
 
-    public boolean batteryLevelLow(){
-        if (this.battery == 30){ //asuming stoping requires this amount or less
+    public boolean batteryLevelLow() {
+        if (this.battery <= 40) { //asuming stoping requires this amount or less
             return true;
         }
         return false;

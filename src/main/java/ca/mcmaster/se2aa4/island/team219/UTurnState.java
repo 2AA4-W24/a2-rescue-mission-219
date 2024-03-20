@@ -9,12 +9,13 @@ public class UTurnState implements State {
 
     @Override
     public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        
         JSONObject decision = new JSONObject();
-
         this.info = currentInformation;
         data.initializeExtras(info);
 
-        if (drone.uTurnDirection == "left"){
+        if (drone.uTurnDirection == "left") {
+
             if (drone.uTurns == 0) {
                 decision = drone.turnLeftGridSearch();
                 drone.uTurns++;
@@ -31,7 +32,9 @@ public class UTurnState implements State {
                 drone.uTurnDirection = "right";
                 drone.switchState(new EchoState());
             }
-        } else if (drone.uTurnDirection == "right"){
+
+        } else if (drone.uTurnDirection == "right") {
+
             if (drone.uTurns == 0) {
                 decision = drone.turnRightGridSearch();
                 drone.uTurns++;
@@ -48,8 +51,10 @@ public class UTurnState implements State {
                 drone.uTurnDirection = "left";
                 drone.switchState(new EchoState());
             }
+
         }
         
         return decision;
     } 
+
 }

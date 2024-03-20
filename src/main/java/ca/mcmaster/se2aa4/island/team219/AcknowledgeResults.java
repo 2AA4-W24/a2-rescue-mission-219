@@ -11,14 +11,13 @@ public class AcknowledgeResults {
     private boolean nothingFound = false;
     private boolean creekFound = false;
     private boolean emergencySiteFound = false;
-    public JSONObject extras;
-
-    public ArrayList<String> creekIds = new ArrayList<>();
     private ArrayList<Integer> listOfCreeksX = new ArrayList<>();
     private ArrayList<Integer> listOfCreeksY = new ArrayList<>();
     private int emergencyX = 0;
     private int emergencyY = 0;
     private CalculateClosestCreek closestCreekID;
+    public JSONObject extras;
+    public ArrayList<String> creekIds = new ArrayList<>();
 
     public void initializeExtras(Information info) {
         if (!(info == null)){
@@ -45,7 +44,6 @@ public class AcknowledgeResults {
         } else {
             nothingFound = false;
         }
-
         if (nothingFound == true){
             if (this.distance() < 2){
                 nothingFound = true;
@@ -123,10 +121,6 @@ public class AcknowledgeResults {
     public String getClosestCreek() { 
         this.closestCreekID = new CalculateClosestCreek(listOfCreeksX, listOfCreeksY, creekIds, emergencyX, emergencyY);   
         return closestCreekID.calculateClosestCreek();
-    }
-
-    public ArrayList<String> getCreekIds() {
-        return creekIds;
     }
 
 }

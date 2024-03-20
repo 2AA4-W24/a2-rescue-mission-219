@@ -5,18 +5,15 @@ import org.json.JSONObject;
 public class SecondEchoState implements State {
 
     private AcknowledgeResults data = new AcknowledgeResults();
-
     private Information info = new Information(0, new JSONObject());
 
     @Override
     public JSONObject stateChange(GridSearch drone, Information currentInformation) {
-        JSONObject decision = new JSONObject();
         
+        JSONObject decision = new JSONObject();
         this.info = currentInformation;
-
         data.initializeExtras(info);
         
-
         if (drone.outOfRangeCounter == 2) {
             drone.switchState(new FlyToEndState());
             String forward = drone.getCurrentDirection().toString();
@@ -31,4 +28,5 @@ public class SecondEchoState implements State {
         
         return decision;
     } 
+    
 }

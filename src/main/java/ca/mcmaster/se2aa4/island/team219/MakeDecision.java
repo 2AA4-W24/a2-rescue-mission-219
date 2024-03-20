@@ -1,12 +1,10 @@
 package ca.mcmaster.se2aa4.island.team219;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 public class MakeDecision {
 
-    public Information currentInformation = new Information(0, new JSONObject());
+    private Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
@@ -14,17 +12,15 @@ public class MakeDecision {
     private GoToLand droneToLand;
     private GridSearch droneGridSearch;
     private boolean secondRun;
-    private final Logger logger = LogManager.getLogger();
 
     public MakeDecision(Integer battery, Compass direction) {
         this.currentDirection = direction;
         int batteryInt = battery.intValue(); 
         this.batteryLevel = new Battery(batteryInt);
-        data = new AcknowledgeResults();
         this.firstRun = true;
         this.secondRun = true;
         this.droneToLand = new GoToLand(batteryLevel, currentDirection);
-        
+        data = new AcknowledgeResults();
     }
     
     public void getInfo(Information info) {
@@ -42,14 +38,14 @@ public class MakeDecision {
 
     public void initializeGridSearch() {
         if (secondRun == true && droneToLand.missionToLand()){
-            this.droneGridSearch = new GridSearch(droneToLand.uTurnDirection(), droneToLand.echoeUntilOcean(), droneToLand.getBattery(), droneToLand.getCurrentDirection(), droneToLand.getOriginalXCoordinate(), droneToLand.getOriginalYCoordinate());
+            this.droneGridSearch = new GridSearch(droneToLand.uTurnDirection(), droneToLand.getBattery(), droneToLand.getCurrentDirection());
             secondRun = false;
         }
     }
 
     public JSONObject makeDecision() {
+        
         JSONObject decision = new JSONObject();
-
         data.initializeExtras(currentInformation);
 
         if (firstRun){
@@ -69,9 +65,7 @@ public class MakeDecision {
             decision = decision.put("action", "stop");
         }
 
-        logger.info(droneToLand.getCurrentDirection());
-
         return decision;
     }
-
+    
 }

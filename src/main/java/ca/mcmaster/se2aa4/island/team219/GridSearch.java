@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public class GridSearch extends Drone{
 
-    public Information currentInformation = new Information(0, new JSONObject());
+    private Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
@@ -24,25 +24,20 @@ public class GridSearch extends Drone{
     private int emergencySiteCoordinatesX;
     private int emergencySiteCoordinatesY;
     private boolean firstRun;
-
     public boolean echoFoundGround;
     public boolean scanFoundGround;
     public int range;
-    public boolean askedForRange;
     public boolean firstScan;
     private State state;
     public int flyCounter;
     public int distanceToOOB;
 
-    
-
-    public GridSearch(String uTurnDirection, String echoeUntilOcean, Battery batteryLevel, Compass direction, int originalX, int originalY) {
+    public GridSearch(String uTurnDirection, Battery batteryLevel, Compass direction) {
         this.currentDirection = direction;
         this.batteryLevel = batteryLevel;
         this.map = new VirtualCoordinateMap(currentDirection, originalX, originalY); 
-        data = new AcknowledgeResults();
-        this.originalX = originalX;
-        this.originalY = originalY;
+        this.originalX = 0;
+        this.originalY = 0;
         this.uTurnDirection = uTurnDirection;
         this.uTurns = 0;
         this.outOfRangeCounter = 0;
@@ -54,12 +49,10 @@ public class GridSearch extends Drone{
         this.range = 0;
         this.state = new ScanState();
         this.echoFoundGround = false;
-        this.askedForRange = false;
         this.firstScan = true;
         this.flyCounter = 0;
         this.distanceToOOB = 0;
-        
-        
+        data = new AcknowledgeResults();
     }
 
     @Override
@@ -99,7 +92,6 @@ public class GridSearch extends Drone{
         return range;
     }
 
-
     @Override
     public int getBatteryLevelDrone() {
         return this.batteryLevel.getBatteryLevel();
@@ -107,7 +99,7 @@ public class GridSearch extends Drone{
     
     @Override
     public boolean batteryLevelWarning(){
-        if (getBatteryLevelDrone() <= 30){
+        if (getBatteryLevelDrone() <= 40){
             return true;
         }else{
             return false;
@@ -145,41 +137,40 @@ public class GridSearch extends Drone{
     public JSONObject makeDecision() {
 
         JSONObject decision = new JSONObject();
-
         data.initializeExtras(currentInformation);
 
         if (checkedForSite) {
+
             if (data.creekIsFound()) {
                 creekX = map.getCurrentX();
                 creekY = map.getCurrentY();
                 data.storeCoordinates(creekX,creekY);
-                
             }
             if (data.emergencySiteIsFound()) {
                 emergencySiteCoordinatesX = map.getCurrentX();
                 emergencySiteCoordinatesY = map.getCurrentY();
                 data.storeCoordinatesEmergency(emergencySiteCoordinatesX, emergencySiteCoordinatesY);
             }
+
             checkedForSite = false;
         }
 
         decision = state.stateChange(this, currentInformation);
         
-
-        if (decision.toString().contains("fly")){
+        if (decision.toString().contains("fly")) {
             map.moveForward();
-            
-        } else if (decision.toString().contains("heading")){
-            if (turnedRight == true){
+        } else if (decision.toString().contains("heading")) {
+
+            if (turnedRight) {
                 currentDirection = currentDirection.right();
                 map.turnRight();
                 turnedRight = false;
-            } else if (turnedLeft == true){
+            } else if (turnedLeft) {
                 currentDirection = currentDirection.left();
                 map.turnLeft();
                 turnedLeft = false;
             }
-            
+
         }
 
         if (decision.toString().contains("scan") && firstRun) {
@@ -198,5 +189,4 @@ public class GridSearch extends Drone{
         
         return decision;
     }
-
 }

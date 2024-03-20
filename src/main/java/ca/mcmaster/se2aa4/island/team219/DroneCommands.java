@@ -3,8 +3,6 @@ package ca.mcmaster.se2aa4.island.team219;
 import org.json.JSONObject;
 
 public interface DroneCommands {
-    void getInfo(Information info);
-    int getBatteryLevelDrone();
     JSONObject makeDecision();
     JSONObject turnLeft(Compass direction);
     JSONObject turnRight(Compass direction);
@@ -15,4 +13,6 @@ public interface DroneCommands {
     JSONObject stop();
     JSONObject scan();
     boolean batteryLevelWarning();
+    void getInfo(Information info);
+    int getBatteryLevelDrone();
 }
