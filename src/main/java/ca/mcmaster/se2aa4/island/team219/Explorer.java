@@ -16,6 +16,7 @@ public class Explorer implements IExplorerRaid {
     private Compass currentDirection; 
     private MakeDecision Drone;
     public JSONObject extras;
+    private HeadingTranslator headingTranslator;
 
     @Override
     public void initialize(String s) {
@@ -26,7 +27,7 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
-        currentDirection = translator.translateDirection(direction);
+        currentDirection = headingTranslator.translateDirection(direction);
         Drone = new MakeDecision(batteryLevel, currentDirection);
         logger.info("finished initializing");
         
