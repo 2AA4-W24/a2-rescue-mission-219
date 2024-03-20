@@ -13,11 +13,11 @@ public class AcknowledgeResults {
     private boolean emergencySiteFound = false;
     public JSONObject extras;
 
-    private ArrayList<String> creekIds = new ArrayList<>();
+    public ArrayList<String> creekIds = new ArrayList<>();
     private ArrayList<Integer> listOfCreeksX = new ArrayList<>();
     private ArrayList<Integer> listOfCreeksY = new ArrayList<>();
-    public int emergencyX = 0;
-    public int emergencyY = 0;
+    private int emergencyX = 0;
+    private int emergencyY = 0;
     private CalculateClosestCreek closestCreekID;
 
     public void initializeExtras(Information info) {
@@ -123,6 +123,10 @@ public class AcknowledgeResults {
     public String getClosestCreek() { 
         this.closestCreekID = new CalculateClosestCreek(listOfCreeksX, listOfCreeksY, creekIds, emergencyX, emergencyY);   
         return closestCreekID.calculateClosestCreek();
+    }
+
+    public ArrayList<String> getCreekIds() {
+        return creekIds;
     }
 
 }
