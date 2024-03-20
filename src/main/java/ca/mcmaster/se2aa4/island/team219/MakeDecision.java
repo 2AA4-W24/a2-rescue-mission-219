@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class MakeDecision {
 
-    private Information currentInformation = new Information(0, new JSONObject());
+    public Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
@@ -62,7 +62,7 @@ public class MakeDecision {
         } else if (droneToLand.missionToLand()) {
             initializeGridSearch();
             droneGridSearch.getInfo(currentInformation);
-            decision = droneGridSearch.makeDecision(); 
+            decision = droneGridSearch.makeDecision();
         } else {
             decision = decision.put("action", "stop");
         }
