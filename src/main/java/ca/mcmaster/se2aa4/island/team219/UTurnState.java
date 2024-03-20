@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
-public class uTurnState implements State {
+public class UTurnState implements State {
 
     private Information info = new Information(0, new JSONObject());
     private AcknowledgeResults data = new AcknowledgeResults();
@@ -18,11 +18,11 @@ public class uTurnState implements State {
             if (drone.uTurns == 0) {
                 decision = drone.turnLeftGridSearch();
                 drone.uTurns++;
-                drone.switchState(new uTurnState());
+                drone.switchState(new UTurnState());
             } else if (drone.uTurns == 1) {
                 decision = drone.turnLeftGridSearch();
                 drone.uTurns++;
-                drone.switchState(new uTurnState());
+                drone.switchState(new UTurnState());
             } else if (drone.uTurns == 2) {
                 String forward = drone.getCurrentDirection().toString();
                 JSONObject forwardJ = new JSONObject().put("direction", forward);
@@ -35,11 +35,11 @@ public class uTurnState implements State {
             if (drone.uTurns == 0) {
                 decision = drone.turnRightGridSearch();
                 drone.uTurns++;
-                drone.switchState(new uTurnState());
+                drone.switchState(new UTurnState());
             } else if (drone.uTurns == 1) {
                 decision = drone.turnRightGridSearch();
                 drone.uTurns++;
-                drone.switchState(new uTurnState());
+                drone.switchState(new UTurnState());
             } else if (drone.uTurns == 2) {
                 String forward = drone.getCurrentDirection().toString();
                 JSONObject forwardJ = new JSONObject().put("direction", forward);

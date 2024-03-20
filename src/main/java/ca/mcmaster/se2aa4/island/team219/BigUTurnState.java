@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
-public class bigUTurnState implements State {
+public class BigUTurnState implements State {
 
     private AcknowledgeResults data = new AcknowledgeResults();
 
@@ -20,16 +20,16 @@ public class bigUTurnState implements State {
             if (drone.uTurns == 0) {
                 decision = drone.turnLeftGridSearch();
                 drone.uTurns++;
-                drone.switchState(new bigUTurnState());
+                drone.switchState(new BigUTurnState());
                 drone.islandHalvesExplored++;
             } else if (drone.uTurns == 1) {
                 decision = decision.put("action", "fly");
                 drone.uTurns++;
-                drone.switchState(new bigUTurnState());
+                drone.switchState(new BigUTurnState());
             } else if (drone.uTurns == 2) {
                 decision = drone.turnLeftGridSearch();
                 drone.uTurns++;
-                drone.switchState(new bigUTurnState());
+                drone.switchState(new BigUTurnState());
             } else if (drone.uTurns == 3) {
                 decision = drone.scanGridSearch();
                 drone.switchState(new ScanState());
@@ -42,16 +42,16 @@ public class bigUTurnState implements State {
             if (drone.uTurns == 0) {
                 decision = drone.turnRightGridSearch();
                 drone.uTurns++;
-                drone.switchState(new bigUTurnState());
+                drone.switchState(new BigUTurnState());
                 drone.islandHalvesExplored++;
             } else if (drone.uTurns == 1) {
                 decision = decision.put("action", "fly");
                 drone.uTurns++;
-                drone.switchState(new bigUTurnState());
+                drone.switchState(new BigUTurnState());
             } else if (drone.uTurns == 2) {
                 decision = drone.turnRightGridSearch();
                 drone.uTurns++;
-                drone.switchState(new bigUTurnState());
+                drone.switchState(new BigUTurnState());
             } else if (drone.uTurns == 3) {
                 decision = drone.scanGridSearch();
                 drone.checkedForSite = true;

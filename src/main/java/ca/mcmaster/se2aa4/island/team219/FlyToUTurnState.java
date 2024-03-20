@@ -26,7 +26,7 @@ public class FlyToUTurnState implements State {
             drone.distanceToOOB--;
         } else if (drone.distanceToOOB <= 7) {
             decision = decision.put("action", "fly");
-            drone.switchState(new uTurnState());
+            drone.switchState(new UTurnState());
             drone.distanceToOOB = 0;
         }
 
@@ -34,7 +34,7 @@ public class FlyToUTurnState implements State {
             String forward = drone.getCurrentDirection().toString();
             JSONObject forwardJ = new JSONObject().put("direction", forward);
             decision.put("action", "echo").put("parameters", forwardJ);
-            drone.switchState(new uTurnState());
+            drone.switchState(new UTurnState());
             drone.distanceToOOB = 0;
         }
         
