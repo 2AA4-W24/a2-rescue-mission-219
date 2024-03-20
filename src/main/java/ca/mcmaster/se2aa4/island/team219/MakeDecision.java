@@ -9,7 +9,7 @@ public class MakeDecision {
     private Battery batteryLevel; 
     private Compass currentDirection;
     private boolean firstRun;
-    private GoToLand droneToLand;
+    private FindLand droneToLand;
     private GridSearch droneGridSearch;
     private boolean secondRun;
 
@@ -19,7 +19,7 @@ public class MakeDecision {
         this.batteryLevel = new Battery(batteryInt);
         this.firstRun = true;
         this.secondRun = true;
-        this.droneToLand = new GoToLand(batteryLevel, currentDirection);
+        this.droneToLand = new FindLand(batteryLevel, currentDirection);
         data = new AcknowledgeResults();
     }
     
