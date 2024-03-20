@@ -4,7 +4,7 @@ public class HeadingTranslator {
 
     private Compass currentDirection; 
 
-    public Compass translateDirection(String direction){
+    public Compass translateDirection(String direction) {
 
         if (direction.equals("E")){
             currentDirection = Compass.E;

@@ -16,7 +16,7 @@ public class Explorer implements IExplorerRaid {
     private Compass currentDirection; 
     private MakeDecision Drone;
     public JSONObject extras;
-    private HeadingTranslator headingTranslator;
+    private HeadingTranslator headingTranslator = new HeadingTranslator();
 
     @Override
     public void initialize(String s) {
