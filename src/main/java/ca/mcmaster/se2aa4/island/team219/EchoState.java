@@ -28,7 +28,6 @@ public class EchoState implements State {
             String forward = drone.getCurrentDirection().toString();
             JSONObject forwardJ = new JSONObject().put("direction", forward);
             decision.put("action", "echo").put("parameters", forwardJ);
-            drone.distanceToOOR = data.distance();
             drone.outOfRangeCounter++;
             drone.switchState(new SecondEchoState());
         }

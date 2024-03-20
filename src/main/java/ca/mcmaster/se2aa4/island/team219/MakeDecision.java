@@ -54,7 +54,9 @@ public class MakeDecision {
 
         if (firstRun){
             droneToLand.getInfo(currentInformation);
-            decision = droneToLand.echoInAllDirections();
+            String forward = droneToLand.getCurrentDirection().toString();
+            JSONObject forwardJ = new JSONObject().put("direction", forward);
+            decision.put("action", "echo").put("parameters", forwardJ);
             firstRun = false;
         } else if (!droneToLand.missionToLand()) {
             droneToLand.getInfo(currentInformation);

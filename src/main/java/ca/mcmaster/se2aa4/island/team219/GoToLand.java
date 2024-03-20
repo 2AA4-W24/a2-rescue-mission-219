@@ -17,7 +17,7 @@ public class GoToLand extends Drone {
     private boolean echoLeft;
     private boolean goToLand;
     private int echoCounter; 
-    private boolean missionToLand; // also in make decision
+    public boolean missionToLand; // also in make decision
     private int originalX; // also in make decision
     private int originalY; // also in make decision
     
@@ -25,7 +25,19 @@ public class GoToLand extends Drone {
     private boolean scanned;
     private String uTurnDirection;
     private String echoeUntilOcean;
-    private int distanceToLand;
+    public int distanceToLand;
+
+    public boolean dontEchoRight;
+
+    public boolean dontEchoLeft;
+
+    public int range;
+
+    public boolean turnedLeft;
+
+    public boolean turnedRight;
+
+    private ToLandState state;
 
 
     public GoToLand(Battery batteryLevel, Compass direction) {
@@ -45,6 +57,14 @@ public class GoToLand extends Drone {
         this.echoeUntilOcean = "left";
         this.originalX = 0;
         this.originalY = 0;
+
+        this.range = 0;
+        this.state = new EchoForwardState();
+        this.dontEchoLeft = false;
+        this.dontEchoRight = false;
+        this.turnedLeft = false;
+        this.turnedRight = false;
+
         
     }
 
@@ -91,57 +111,53 @@ public class GoToLand extends Drone {
         return missionToLand;
     }
 
+    public void switchState(ToLandState state) {
+        this.state = state;
+    }
+
+    public boolean isFound(){
+        data.initializeExtras(currentInformation);
+        return data.isFound();
+    }
+
+    public boolean groundIsFound() {
+        data.initializeExtras(currentInformation);
+        return data.groundIsFound();
+    }
+
     public Compass getCurrentDirection() {
         return currentDirection;
     }
 
-
-
-    
-    public JSONObject echoInAllDirections() {
-
-
-        JSONObject decision = new JSONObject();
-
-        
-        if (!echoForward) {
-            decision = echoTowards(currentDirection);
-            this.echoForward = true;
-            this.temporaryDirection = this.currentDirection;
-        } else if (!echoRight) {
-            decision = echoRight(currentDirection);
-            this.echoRight = true;
-            this.temporaryDirection = this.currentDirection.right();
-        } else if (!echoLeft) {
-            decision = echoLeft(currentDirection);
-            this.echoLeft = true;
-            this.temporaryDirection = this.currentDirection.left();
-        }
-    
-        if (echoForward && echoRight && echoLeft) {
-            echoAll = true;
-        } 
-
-        return decision;
+    public int distanceUntilLand() {
+        data.initializeExtras(currentInformation);
+        range = data.distance();
+        return range;
     }
 
-    
-    public JSONObject turn(Compass direction) {
-        JSONObject decision = new JSONObject();
-        oldDirection = currentDirection;
-        currentDirection = direction;
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
-        
-        if (currentDirection == oldDirection.right()) { 
-            map.turnRight(); 
-            
-        } else if (currentDirection == oldDirection.left()) {
-            map.turnLeft(); 
-        }
-
-        return decision;
+    public void setRange(int distance) {
+        range = distance;
     }
+
+    public int getRange() {
+        return range;
+    }
+
+
+    public JSONObject turnLeftToLand() {
+        turnedLeft = true;
+        return turnLeft(currentDirection);
+    }
+
+    public JSONObject turnRightToLand() {
+        turnedRight = true;
+        return turnRight(currentDirection);
+    }
+
+    public JSONObject scanToLand() {
+        return scan();
+    }
+    
 
     @Override
     public JSONObject makeDecision() {
@@ -149,59 +165,35 @@ public class GoToLand extends Drone {
 
         data.initializeExtras(currentInformation);
 
-        if (echoCounter == 1){
-            distanceToLand = data.distance();
-        }
+        decision = state.stateChange(this, currentInformation);
 
-        if (data.isFound() && echoCounter == 0) {
-            distanceToLand = data.distance();
-            this.goToLand = true;
-            if (currentDirection == temporaryDirection){
-                decision = fly();
-            }else{
-                decision = turn(temporaryDirection);
+        if (decision.toString().contains("fly")){
+            map.moveForward();
+            
+        } else if (decision.toString().contains("heading")){
+            if (turnedRight == true){
+                currentDirection = currentDirection.right();
+                map.turnRight();
+                turnedRight = false;
+            } else if (turnedLeft == true){
+                currentDirection = currentDirection.left();
+                map.turnLeft();
+                turnedLeft = false;
             }
             
-            if (temporaryDirection == currentDirection.left() || currentDirection == temporaryDirection){ 
-                uTurnDirection = "left";
-                echoeUntilOcean = "right";
-            }else{
-                uTurnDirection = "right";
-                echoeUntilOcean = "left";
-            }
-
-        } else if (!echoAll && !goToLand && !data.isFound()){
-            decision = echoInAllDirections();
-
-        } else if (echoAll && !goToLand) {
-            decision = fly();
-            echoAll = false;
-            echoRight = false;
-            echoLeft = false;
-
-        } else if (goToLand) {
-            if (distanceToLand != 0){
-                if (echoCounter == 0){
-                    decision = echoTowards(currentDirection);
-                    echoCounter++;
-                } else if (echoCounter == 1){
-                    decision = fly();
-                }
-                scanned = false;
-                distanceToLand--;
-            } else if (distanceToLand == 0 && scanned == false) {
-                decision = scan();
-                scanned = true;
-                missionToLand = true;
-                echoRight = false;
-                echoLeft = false;
-                originalX = map.getCurrentX();
-                originalY = map.getCurrentY();
-            }
         }
 
         if (batteryLevelWarning()){
             decision = stop();
+        }
+
+
+        if (turnedRight){ 
+            uTurnDirection = "right";
+            echoeUntilOcean = "left";
+        }else{
+            uTurnDirection = "left";
+            echoeUntilOcean = "right";
         }
 
         return decision;

@@ -49,7 +49,6 @@ public class UTurnState implements State {
                 drone.switchState(new EchoState());
             }
         }
-        drone.echoeUntilOcean = drone.uTurnDirection;
         
         return decision;
     } 
