@@ -30,4 +30,5 @@ public class BatteryTest {
         Battery battery = new Battery(30);
         assertTrue(battery.batteryLevelLow(), "Battery level at or below 30 should be considered low.");
     }
+    
 }

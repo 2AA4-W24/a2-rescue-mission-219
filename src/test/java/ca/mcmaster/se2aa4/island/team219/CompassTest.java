@@ -78,4 +78,5 @@ public class CompassTest {
         direction = Compass.W;
         assertEquals("W", direction.toString(), "The string representation of West should be 'W'.");
     }
+    
 }
