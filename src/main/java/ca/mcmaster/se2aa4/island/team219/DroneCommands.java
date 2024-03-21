@@ -12,7 +12,5 @@ public interface DroneCommands {
     JSONObject fly();
     JSONObject stop();
     JSONObject scan();
-    boolean batteryLevelWarning();
     void getInfo(Information info);
-    int getBatteryLevelDrone();
 }

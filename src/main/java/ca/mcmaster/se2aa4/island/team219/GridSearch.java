@@ -6,46 +6,42 @@ public class GridSearch extends Drone{
 
     private Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
-    private Battery batteryLevel; 
     private Compass currentDirection;
     private VirtualCoordinateMap map;
-    private boolean bigUTurnComplete; 
+    private GridSearchState state;
+    private String uTurnDirection;
     private int outOfRangeCounter;
     private int islandHalvesExplored; 
     private int uTurns;
-    private String uTurnDirection;
-    private boolean checkedForSite;
-    private boolean turnedRight;
-    private boolean turnedLeft;
     private int originalX;
     private int originalY;
     private int creekX;
     private int creekY;
     private int emergencySiteCoordinatesX;
     private int emergencySiteCoordinatesY;
-    private boolean firstRun;
     private int range;
-    private GridSearchState state;
     private int distanceToOOB;
+    private boolean firstRun;
+    private boolean checkedForSite;
+    private boolean turnedRight;
+    private boolean turnedLeft;
 
-    public GridSearch(String uTurnDirection, Battery batteryLevel, Compass direction) {
-        this.currentDirection = direction;
-        this.batteryLevel = batteryLevel;
+    public GridSearch(String uTurnDirection, Compass direction) {
         this.map = new VirtualCoordinateMap(currentDirection, originalX, originalY); 
+        this.state = new ScanState();
+        data = new AcknowledgeResults();
+        this.uTurnDirection = uTurnDirection;
+        this.currentDirection = direction;
         this.originalX = 0;
         this.originalY = 0;
-        this.uTurnDirection = uTurnDirection;
         this.uTurns = 0;
         this.outOfRangeCounter = 0;
-        this.bigUTurnComplete = true;
         this.islandHalvesExplored = 0;
+        this.range = 0;
+        this.distanceToOOB = 0;
         this.turnedLeft = false;
         this.turnedRight = false;
         this.firstRun = true;
-        this.range = 0;
-        this.state = new ScanState();
-        this.distanceToOOB = 0;
-        data = new AcknowledgeResults();
     }
 
     @Override
@@ -57,69 +53,20 @@ public class GridSearch extends Drone{
         this.state = state;
     }
 
-    public boolean isFound(){
-        data.initializeExtras(currentInformation);
-        return data.isFound();
-    }
 
-    public boolean groundIsFound() {
-        data.initializeExtras(currentInformation);
-        return data.groundIsFound();
-    }
-
-    public Compass getCurrentDirection() {
-        return currentDirection;
-    }
-
-    public int distanceUntilLand() {
-        data.initializeExtras(currentInformation);
-        range = data.distance();
-        return range;
-    }
-
-    public void setRange(int distance) {
-        range = distance;
-    }
-
-    public int getRange() {
-        return range;
-    }
-
-    @Override
-    public int getBatteryLevelDrone() {
-        return this.batteryLevel.getBatteryLevel();
-    }
-    
-    @Override
-    public boolean batteryLevelWarning(){
-        if (getBatteryLevelDrone() <= 40){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public JSONObject turnLeftGridSearch() {
+    private JSONObject turnLeftGridSearch() {
         turnedLeft = true;
         return turnLeft(currentDirection);
     }
 
-    public JSONObject turnRightGridSearch() {
+    private JSONObject turnRightGridSearch() {
         turnedRight = true;
         return turnRight(currentDirection);
     }
 
-    public JSONObject scanGridSearch() {
+    private JSONObject scanGridSearch() {
         checkedForSite = true;
         return scan();
-    }
-
-    public int islandHalvesExplored() {
-        return islandHalvesExplored;
-    }
-
-    public boolean bigUTurnComplete() {
-        return bigUTurnComplete;
     }
 
     public String getClosestCreek() {
@@ -148,7 +95,7 @@ public class GridSearch extends Drone{
             checkedForSite = false;
         }
 
-        decision = state.stateChange(this, currentInformation);
+        decision = state.stateChange(this);
         
         if (decision.toString().contains("fly")) {
             map.moveForward();
@@ -172,10 +119,6 @@ public class GridSearch extends Drone{
             firstRun = false;
         } 
 
-        if (batteryLevelWarning()){
-            decision = stop();
-        }
-
         if (islandHalvesExplored > 1 & originalX == map.getCurrentX() && originalY == map.getCurrentY()) {
             decision = stop();
         }
@@ -185,15 +128,12 @@ public class GridSearch extends Drone{
 
     private class BigUTurnState implements GridSearchState {
 
-        private AcknowledgeResults data = new AcknowledgeResults();
-        private Information info = new Information(0, new JSONObject());
     
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        public JSONObject stateChange(GridSearch drone) {
             
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
             
             if (drone.uTurnDirection.equals("right")) {
                 
@@ -203,7 +143,7 @@ public class GridSearch extends Drone{
                     drone.switchState(new BigUTurnState());
                     drone.islandHalvesExplored++;
                 } else if (drone.uTurns == 1) {
-                    decision = decision.put("action", "fly");
+                    decision = fly();
                     drone.uTurns++;
                     drone.switchState(new BigUTurnState());
                 } else if (drone.uTurns == 2) {
@@ -227,7 +167,7 @@ public class GridSearch extends Drone{
                     drone.switchState(new BigUTurnState());
                     drone.islandHalvesExplored++;
                 } else if (drone.uTurns == 1) {
-                    decision = decision.put("action", "fly");
+                    decision = fly();
                     drone.uTurns++;
                     drone.switchState(new BigUTurnState());
                 } else if (drone.uTurns == 2) {
@@ -250,27 +190,22 @@ public class GridSearch extends Drone{
 
     private class EchoState implements GridSearchState {
 
-        private AcknowledgeResults data = new AcknowledgeResults();
-        private Information info = new Information(0, new JSONObject());
     
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        public JSONObject stateChange(GridSearch drone) {
             
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
             
             if (data.isFound()) {
                 drone.switchState(new FlyState());
-                decision = decision.put("action", "fly");
-                int distance = drone.distanceUntilLand();
+                decision = fly();
+                int distance = data.distance();
                 distance = distance - 1;
-                drone.setRange(distance);
+                drone.range = distance;
                 drone.outOfRangeCounter= 0;
             } else if (!data.isFound()) {
-                String forward = drone.getCurrentDirection().toString();
-                JSONObject forwardJ = new JSONObject().put("direction", forward);
-                decision.put("action", "echo").put("parameters", forwardJ);
+                decision = echoTowards(currentDirection);
                 drone.outOfRangeCounter++;
                 drone.switchState(new SecondEchoState());
             }
@@ -281,19 +216,15 @@ public class GridSearch extends Drone{
 
     public class FlyState implements GridSearchState {
 
-        private Information info = new Information(0, new JSONObject());
-        private AcknowledgeResults data = new AcknowledgeResults();
-    
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
-    
+        public JSONObject stateChange(GridSearch drone) {
+            
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
     
-            if (drone.getRange() > 0) {
+            if (drone.range > 0) {
                 drone.switchState(new FlyState());
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.range--;
             } else {
                 drone.switchState(new ScanState());
@@ -307,36 +238,30 @@ public class GridSearch extends Drone{
     }
 
     public class FlyToEndState implements GridSearchState {
-
-        private Information info = new Information(0, new JSONObject());
-        private AcknowledgeResults data = new AcknowledgeResults();
     
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
-    
+        public JSONObject stateChange(GridSearch drone) {
+            
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
     
             if (drone.distanceToOOB == 0) {
                 drone.distanceToOOB = data.distance();
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.switchState(new FlyToEndState());
                 drone.distanceToOOB--;
             } else if (drone.distanceToOOB > 7) {
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.switchState(new FlyToEndState());
                 drone.distanceToOOB--;
             } else if (drone.distanceToOOB <= 7) {
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.switchState(new BigUTurnState());
                 drone.distanceToOOB = 0;
             }
     
             if (drone.distanceToOOB < 2) {
-                String forward = drone.getCurrentDirection().toString();
-                JSONObject forwardJ = new JSONObject().put("direction", forward);
-                decision.put("action", "echo").put("parameters", forwardJ);
+                decision = echoTowards(currentDirection);
                 drone.switchState(new BigUTurnState());
                 drone.distanceToOOB = 0;
             }
@@ -347,36 +272,30 @@ public class GridSearch extends Drone{
     }
     
     public class FlyToUTurnState implements GridSearchState {
-
-        private Information info = new Information(0, new JSONObject());
-        private AcknowledgeResults data = new AcknowledgeResults();
     
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
-    
+        public JSONObject stateChange(GridSearch drone) {
+            
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
     
             if (drone.distanceToOOB == 0) {
                 drone.distanceToOOB = data.distance();
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.switchState(new FlyToUTurnState());
                 drone.distanceToOOB--;
             } else if (drone.distanceToOOB > 7) {
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.switchState(new FlyToUTurnState());
                 drone.distanceToOOB--;
             } else if (drone.distanceToOOB <= 7) {
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.switchState(new UTurnState());
                 drone.distanceToOOB = 0;
             }
     
             if (drone.distanceToOOB < 2) {
-                String forward = drone.getCurrentDirection().toString();
-                JSONObject forwardJ = new JSONObject().put("direction", forward);
-                decision.put("action", "echo").put("parameters", forwardJ);
+                decision = echoTowards(currentDirection);
                 drone.switchState(new UTurnState());
                 drone.distanceToOOB = 0;
             }
@@ -388,25 +307,22 @@ public class GridSearch extends Drone{
     
     public class ScanState implements GridSearchState {
 
-        private Information info = new Information(0, new JSONObject());
         private AcknowledgeResults data = new AcknowledgeResults();
     
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        public JSONObject stateChange(GridSearch drone) {
             
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            
+            data.initializeExtras(currentInformation);
             
             if (data.groundIsFound()){
                 drone.switchState(new FlyState());
-                decision = decision.put("action", "fly");
+                decision = fly();
                 drone.outOfRangeCounter = 0;
             } else if (!data.groundIsFound()) {
                 drone.switchState(new EchoState());
-                String forward = drone.getCurrentDirection().toString();
-                JSONObject forwardJ = new JSONObject().put("direction", forward);
-                decision.put("action", "echo").put("parameters", forwardJ);
+                decision = echoTowards(currentDirection);
             }
     
             return decision;
@@ -416,26 +332,18 @@ public class GridSearch extends Drone{
     
     public class SecondEchoState implements GridSearchState {
 
-        private AcknowledgeResults data = new AcknowledgeResults();
-        private Information info = new Information(0, new JSONObject());
-    
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        public JSONObject stateChange(GridSearch drone) {
             
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
             
             if (drone.outOfRangeCounter == 2) {
                 drone.switchState(new FlyToEndState());
-                String forward = drone.getCurrentDirection().toString();
-                JSONObject forwardJ = new JSONObject().put("direction", forward);
-                decision.put("action", "echo").put("parameters", forwardJ);
+                decision = echoTowards(currentDirection);
             } else {
                 drone.switchState(new FlyToUTurnState());
-                String forward = drone.getCurrentDirection().toString();
-                JSONObject forwardJ = new JSONObject().put("direction", forward);
-                decision.put("action", "echo").put("parameters", forwardJ);
+                decision = echoTowards(currentDirection);
             }
             
             return decision;
@@ -444,16 +352,12 @@ public class GridSearch extends Drone{
     }
     
     public class UTurnState implements GridSearchState {
-
-        private Information info = new Information(0, new JSONObject());
-        private AcknowledgeResults data = new AcknowledgeResults();
     
         @Override
-        public JSONObject stateChange(GridSearch drone, Information currentInformation) {
+        public JSONObject stateChange(GridSearch drone) {
             
             JSONObject decision = new JSONObject();
-            this.info = currentInformation;
-            data.initializeExtras(info);
+            data.initializeExtras(currentInformation);
     
             if (drone.uTurnDirection == "left") {
     
@@ -466,9 +370,7 @@ public class GridSearch extends Drone{
                     drone.uTurns++;
                     drone.switchState(new UTurnState());
                 } else if (drone.uTurns == 2) {
-                    String forward = drone.getCurrentDirection().toString();
-                    JSONObject forwardJ = new JSONObject().put("direction", forward);
-                    decision.put("action", "echo").put("parameters", forwardJ);
+                    decision = echoTowards(currentDirection);
                     drone.uTurns = 0;
                     drone.uTurnDirection = "right";
                     drone.switchState(new EchoState());
@@ -485,9 +387,7 @@ public class GridSearch extends Drone{
                     drone.uTurns++;
                     drone.switchState(new UTurnState());
                 } else if (drone.uTurns == 2) {
-                    String forward = drone.getCurrentDirection().toString();
-                    JSONObject forwardJ = new JSONObject().put("direction", forward);
-                    decision.put("action", "echo").put("parameters", forwardJ);
+                    decision = echoTowards(currentDirection);
                     drone.uTurns = 0;
                     drone.uTurnDirection = "left";
                     drone.switchState(new EchoState());

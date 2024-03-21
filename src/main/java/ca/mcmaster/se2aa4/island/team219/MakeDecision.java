@@ -8,10 +8,11 @@ public class MakeDecision {
     private AcknowledgeResults data;
     private Battery batteryLevel; 
     private Compass currentDirection;
-    private boolean firstRun;
     private FindLand droneToLand;
     private GridSearch droneGridSearch;
+    private boolean firstRun;
     private boolean secondRun;
+    
 
     public MakeDecision(Integer battery, Compass direction) {
         this.currentDirection = direction;
@@ -19,7 +20,7 @@ public class MakeDecision {
         this.batteryLevel = new Battery(batteryInt);
         this.firstRun = true;
         this.secondRun = true;
-        this.droneToLand = new FindLand(batteryLevel, currentDirection);
+        this.droneToLand = new FindLand(currentDirection);
         data = new AcknowledgeResults();
     }
     
@@ -31,6 +32,14 @@ public class MakeDecision {
     public int getBatteryLevelDrone() {
         return this.batteryLevel.getBatteryLevel();
     }
+    
+    public boolean batteryLevelWarning(){
+        if (getBatteryLevelDrone() <= 40){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public String getClosestCreek(){
         return droneGridSearch.getClosestCreek();
@@ -38,7 +47,7 @@ public class MakeDecision {
 
     public void initializeGridSearch() {
         if (secondRun == true && droneToLand.missionToLand()){
-            this.droneGridSearch = new GridSearch(droneToLand.uTurnDirection(), droneToLand.getBattery(), droneToLand.getCurrentDirection());
+            this.droneGridSearch = new GridSearch(droneToLand.uTurnDirection(), droneToLand.getCurrentDirection());
             secondRun = false;
         }
     }
@@ -62,6 +71,10 @@ public class MakeDecision {
             droneGridSearch.getInfo(currentInformation);
             decision = droneGridSearch.makeDecision();
         } else {
+            decision = decision.put("action", "stop");
+        }
+
+        if (batteryLevelWarning()){
             decision = decision.put("action", "stop");
         }
 
