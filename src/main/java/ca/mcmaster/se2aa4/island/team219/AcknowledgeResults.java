@@ -16,8 +16,8 @@ public class AcknowledgeResults {
     private int emergencyX = 0;
     private int emergencyY = 0;
     private CalculateClosestCreek closestCreekID;
-    public JSONObject extras;
-    public ArrayList<String> creekIds = new ArrayList<>();
+    private JSONObject extras;
+    private ArrayList<String> creekIds = new ArrayList<>();
 
     public void initializeExtras(Information info) {
         if (!(info == null)){

@@ -10,11 +10,11 @@ public class GridSearch extends Drone{
     private Compass currentDirection;
     private VirtualCoordinateMap map;
     private boolean bigUTurnComplete; 
-    public int outOfRangeCounter;
-    public int islandHalvesExplored; 
-    public int uTurns;
-    public String uTurnDirection;
-    public boolean checkedForSite;
+    private int outOfRangeCounter;
+    private int islandHalvesExplored; 
+    private int uTurns;
+    private String uTurnDirection;
+    private boolean checkedForSite;
     private boolean turnedRight;
     private boolean turnedLeft;
     private int originalX;
@@ -24,13 +24,9 @@ public class GridSearch extends Drone{
     private int emergencySiteCoordinatesX;
     private int emergencySiteCoordinatesY;
     private boolean firstRun;
-    public boolean echoFoundGround;
-    public boolean scanFoundGround;
-    public int range;
-    public boolean firstScan;
+    private int range;
     private GridSearchState state;
-    public int flyCounter;
-    public int distanceToOOB;
+    private int distanceToOOB;
 
     public GridSearch(String uTurnDirection, Battery batteryLevel, Compass direction) {
         this.currentDirection = direction;
@@ -48,9 +44,6 @@ public class GridSearch extends Drone{
         this.firstRun = true;
         this.range = 0;
         this.state = new ScanState();
-        this.echoFoundGround = false;
-        this.firstScan = true;
-        this.flyCounter = 0;
         this.distanceToOOB = 0;
         data = new AcknowledgeResults();
     }

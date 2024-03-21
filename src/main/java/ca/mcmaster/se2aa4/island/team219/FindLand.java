@@ -17,10 +17,10 @@ public class FindLand extends Drone {
     private boolean turnedLeft;
     private boolean turnedRight;
     private FindLandState state;
-    public boolean missionToLand; 
-    public int distanceToLand;
-    public boolean dontEchoRight;
-    public boolean dontEchoLeft;
+    private boolean missionToLand; 
+    private int distanceToLand;
+    private boolean dontEchoRight;
+    private boolean dontEchoLeft;
 
     public FindLand(Battery batteryLevel, Compass direction) {
         this.currentDirection = direction;
@@ -37,6 +37,7 @@ public class FindLand extends Drone {
         this.dontEchoRight = false;
         this.turnedLeft = false;
         this.turnedRight = false;
+        this.distanceToLand = 0;
         data = new AcknowledgeResults();
     }
 
