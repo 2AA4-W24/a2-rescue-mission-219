@@ -60,7 +60,7 @@ class AcknowledgeResultsTest {
         assertTrue(results.groundIsFound(), "Should recognize ground when biomes other than OCEAN are found");
     }
 
-    /*@Test
+    @Test
     void testGetClosestCreek() {
         results.storeCoordinates(0, 2); // Creek 1 at (0,2)
         results.storeCoordinates(5, 5); // Creek 2 at (5,5)
@@ -69,6 +69,6 @@ class AcknowledgeResultsTest {
         results.creekIds.add("creek2");
         String closestCreek = results.getClosestCreek();
         assertEquals("creek1", closestCreek, "Should calculate and return the ID of the closest creek to the emergency site");
-    }*/
+    }
     
 }
