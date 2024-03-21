@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class HeadingTranslator {
+public class HeadingTranslatorTest {
 
     @Test
     void testTranslate() {
