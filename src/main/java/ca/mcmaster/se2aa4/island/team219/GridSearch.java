@@ -27,11 +27,11 @@ public class GridSearch extends Drone{
     private boolean turnedLeft;
 
     public GridSearch(String uTurnDirection, Compass direction) {
-        this.map = new VirtualCoordinateMap(currentDirection, originalX, originalY); 
         this.state = new ScanState();
         data = new AcknowledgeResults();
         this.uTurnDirection = uTurnDirection;
         this.currentDirection = direction;
+        this.map = new VirtualCoordinateMap(currentDirection, originalX, originalY); 
         this.originalX = 0;
         this.originalY = 0;
         this.uTurns = 0;
