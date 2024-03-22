@@ -1,21 +1,21 @@
 package ca.mcmaster.se2aa4.island.team219;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
 public class CalculateClosestCreek {
 
-    private ArrayList<String> creekIds;
-    private ArrayList<Integer> listOfCreeksX;
-    private ArrayList<Integer> listOfCreeksY;
+    private List<String> creekIds;
+    private List<Integer> listOfCreeksX;
+    private List<Integer> listOfCreeksY;
     private int emergencyX;
     private int emergencyY;
     private int closestIndex = -1;
     private double minDistance = Double.MAX_VALUE;
     private double distance = 0;
     
-    public CalculateClosestCreek(ArrayList<Integer> listOfCreeksX, ArrayList<Integer> listOfCreeksY, ArrayList<String> creekIds, int emergencyX, int emergencyY) {
+    public CalculateClosestCreek(List<Integer> listOfCreeksX, List<Integer> listOfCreeksY, List<String> creekIds, int emergencyX, int emergencyY) {
         this.listOfCreeksX = listOfCreeksX;
         this.listOfCreeksY = listOfCreeksY;
         this.creekIds = creekIds;

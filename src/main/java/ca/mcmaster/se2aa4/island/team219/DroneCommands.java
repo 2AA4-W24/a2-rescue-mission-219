@@ -2,8 +2,6 @@ package ca.mcmaster.se2aa4.island.team219;
 
 public class DroneCommands {
 
-    public DroneCommands() {
-    }
 
     public Commands turnLeft(Compass currentDirection) {
         return new Commands("heading", currentDirection.left());

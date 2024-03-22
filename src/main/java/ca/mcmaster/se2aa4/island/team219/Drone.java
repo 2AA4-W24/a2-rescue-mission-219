@@ -36,11 +36,7 @@ public class Drone {
     }
     
     public boolean batteryLevelWarning(){
-        if (getBatteryLevelDrone() <= 40){
-            return true;
-        }else{
-            return false;
-        }
+        return getBatteryLevelDrone() <= 40;
     }
 
     public String getClosestCreek(){
@@ -48,7 +44,7 @@ public class Drone {
     }
 
     public void initializeGridSearch() {
-        if (secondRun == true && findLandDecisionMaker.missionToLand()){
+        if (secondRun && findLandDecisionMaker.missionToLand()){
             this.gridSearchDecisionMaker = new GridSearch(findLandDecisionMaker.uTurnDirection(), findLandDecisionMaker.getCurrentDirection());
             secondRun = false;
         }

@@ -5,7 +5,7 @@ import org.json.JSONObject;
 public class Commands {
     private String key = "action";
     private String value;
-    private Compass currentDirection = Compass.noDirection;
+    private Compass currentDirection = Compass.NONE;
 
     public Commands(String value) {
         this.value = value;
@@ -30,7 +30,7 @@ public class Commands {
 
     public JSONObject commandTranslator() {
         JSONObject decision = new JSONObject();
-        if (currentDirection.toString().equals("noDirection")) {
+        if (currentDirection.toString().equals("NONE")) {
             decision.put(key, value);
         } else {
             decision.put(key, value);

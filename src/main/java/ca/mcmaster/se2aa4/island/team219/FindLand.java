@@ -82,10 +82,10 @@ public class FindLand implements DecisionMaker{
 
         if (command.getValue().equals("heading")) {
 
-            if (turnedRight == true) {
+            if (turnedRight) {
                 currentDirection = currentDirection.right();
                 turnedRight = false;
-            } else if (turnedLeft == true) {
+            } else if (turnedLeft) {
                 currentDirection = currentDirection.left();
                 turnedLeft = false;
             }
@@ -104,10 +104,10 @@ public class FindLand implements DecisionMaker{
     
     private class StartingState implements FindLandState {
 
-        private Commands command;
 
         @Override
         public Commands stateChange(FindLand drone) {
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
 
             command = droneCommand.echoTowards(currentDirection);
@@ -118,12 +118,10 @@ public class FindLand implements DecisionMaker{
     }
 
     private class EchoForwardState implements FindLandState {
-    
-        private Commands command;
 
         @Override
         public Commands stateChange(FindLand drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (data.isFound()) {
@@ -142,12 +140,10 @@ public class FindLand implements DecisionMaker{
     }
 
     private class EchoRightState implements FindLandState {
-    
-        private Commands command;
 
         @Override
         public Commands stateChange(FindLand drone) {
-
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (data.isFound()) {
@@ -176,12 +172,10 @@ public class FindLand implements DecisionMaker{
     }
 
     private class EchoLeftState implements FindLandState {
-
-        private Commands command;
     
         @Override
         public Commands stateChange(FindLand drone) {
-    
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (data.isFound()) {
@@ -206,12 +200,10 @@ public class FindLand implements DecisionMaker{
     }
 
     private class FlyForwardState implements FindLandState {
-    
-        private Commands command;
 
         @Override
         public Commands stateChange(FindLand drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (drone.dontEchoRight && !drone.dontEchoLeft) {
@@ -229,11 +221,9 @@ public class FindLand implements DecisionMaker{
 
     private class TurnToLandState implements FindLandState {
 
-        private Commands command;
-
         @Override
         public Commands stateChange(FindLand drone) {
-
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
 
             command = droneCommand.scan();

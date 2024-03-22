@@ -43,14 +43,12 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         extras = extraInfo; 
         logger.info("Additional information received: {}", extraInfo); 
-        //Drone.getInfo(info);
         rescueDrone.getInfo(info);
     }
 
     @Override
     public String takeDecision() {
-        JSONObject decision = new JSONObject();
-        //Commands command = Drone.makeDecision();
+        JSONObject decision;
         Commands command = rescueDrone.makeDecision();
         decision = command.commandTranslator();
         logger.info("The new battery level is " + rescueDrone.getBatteryLevelDrone());

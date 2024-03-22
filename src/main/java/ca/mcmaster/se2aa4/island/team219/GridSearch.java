@@ -15,10 +15,6 @@ public class GridSearch implements DecisionMaker{
     private int uTurns;
     private int originalX;
     private int originalY;
-    private int creekX;
-    private int creekY;
-    private int emergencySiteCoordinatesX;
-    private int emergencySiteCoordinatesY;
     private int range;
     private int distanceToOOB;
     private boolean firstRun;
@@ -98,6 +94,11 @@ public class GridSearch implements DecisionMaker{
 
         data.initializeExtras(currentInformation);
 
+        int creekX;
+        int creekY;
+        int emergencySiteCoordinatesX;
+        int emergencySiteCoordinatesY;
+
         if (checkedForSite) {
 
             if (data.creekIsFound()) {
@@ -138,7 +139,7 @@ public class GridSearch implements DecisionMaker{
             firstRun = false;
         } 
 
-        if (islandHalvesExplored > 1 & originalX == map.getCurrentX() && originalY == map.getCurrentY()) {
+        if (islandHalvesExplored > 1 && originalX == map.getCurrentX() && originalY == map.getCurrentY()) {
             command = droneCommand.stop();
         }
         
@@ -147,11 +148,9 @@ public class GridSearch implements DecisionMaker{
 
     private class BigUTurnState implements GridSearchState {
 
-        private Commands command;
-
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
             
             if (drone.uTurnDirection.equals("right")) {
@@ -209,11 +208,9 @@ public class GridSearch implements DecisionMaker{
 
     private class EchoState implements GridSearchState {
 
-        private Commands command;
-
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
             
             if (data.isFound()) {
@@ -235,11 +232,9 @@ public class GridSearch implements DecisionMaker{
 
     public class FlyState implements GridSearchState {
 
-        private Commands command;
-
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (drone.range > 0) {
@@ -258,12 +253,10 @@ public class GridSearch implements DecisionMaker{
     }
 
     public class FlyToEndState implements GridSearchState {
-    
-        private Commands command;
 
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (drone.distanceToOOB == 0) {
@@ -293,12 +286,10 @@ public class GridSearch implements DecisionMaker{
     }
     
     public class FlyToUTurnState implements GridSearchState {
-
-        private Commands command;
     
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (drone.distanceToOOB == 0) {
@@ -330,11 +321,10 @@ public class GridSearch implements DecisionMaker{
     public class ScanState implements GridSearchState {
 
         private AcknowledgeResults data = new AcknowledgeResults();
-        private Commands command;
     
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
             
             if (data.groundIsFound()){
@@ -353,11 +343,9 @@ public class GridSearch implements DecisionMaker{
     
     public class SecondEchoState implements GridSearchState {
 
-        private Commands command;
-
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
             
             if (drone.outOfRangeCounter == 2) {
@@ -374,12 +362,10 @@ public class GridSearch implements DecisionMaker{
     }
     
     public class UTurnState implements GridSearchState {
-    
-        private Commands command;
 
         @Override
         public Commands stateChange(GridSearch drone) {
-            
+            Commands command = new Commands("");
             data.initializeExtras(currentInformation);
     
             if (drone.uTurnDirection == "left") {
