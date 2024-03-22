@@ -1,16 +1,31 @@
 package ca.mcmaster.se2aa4.island.team219;
 
-import org.json.JSONObject;
+public class DroneCommands {
 
-public interface DroneCommands {
-    JSONObject makeDecision();
-    JSONObject turnLeft(Compass direction);
-    JSONObject turnRight(Compass direction);
-    JSONObject echoTowards(Compass direction);
-    JSONObject echoLeft(Compass direction);
-    JSONObject echoRight(Compass direction);
-    JSONObject fly();
-    JSONObject stop();
-    JSONObject scan();
-    void getInfo(Information info);
+    public DroneCommands() {
+    }
+
+    public Commands turnLeft(Compass currentDirection) {
+        return new Commands("heading", currentDirection.left());
+    }
+
+    public Commands turnRight(Compass currentDirection) {
+        return new Commands("heading", currentDirection.right());
+    }
+
+    public Commands scan() {
+        return new Commands("scan");
+    }
+
+    public Commands fly() {
+        return new Commands("fly");
+    }
+
+    public Commands stop() {
+        return new Commands("stop");
+    }
+
+    public Commands echoTowards(Compass currentDirection) {
+        return new Commands("echo", currentDirection);
+    }
 }

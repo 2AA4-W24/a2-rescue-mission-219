@@ -13,7 +13,7 @@ public class Explorer implements IExplorerRaid {
     private Translator translator = new Translator();
     private final Logger logger = LogManager.getLogger();
     private Compass currentDirection; 
-    private MakeDecision Drone;
+    private Drone rescueDrone;
     private HeadingTranslator headingTranslator = new HeadingTranslator();
     public JSONObject extras;
 
@@ -27,7 +27,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
         currentDirection = headingTranslator.translateDirection(direction);
-        Drone = new MakeDecision(batteryLevel, currentDirection);
+        rescueDrone = new Drone(batteryLevel, currentDirection);
         logger.info("finished initializing");
     }
 
@@ -43,22 +43,25 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         extras = extraInfo; 
         logger.info("Additional information received: {}", extraInfo); 
-        Drone.getInfo(info);
+        //Drone.getInfo(info);
+        rescueDrone.getInfo(info);
     }
 
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        decision = Drone.makeDecision();
-        logger.info("The new battery level is " + Drone.getBatteryLevelDrone());
+        //Commands command = Drone.makeDecision();
+        Commands command = rescueDrone.makeDecision();
+        decision = command.commandTranslator();
+        logger.info("The new battery level is " + rescueDrone.getBatteryLevelDrone());
         logger.info(decision.toString());
         return decision.toString();
     }
 
     @Override
     public String deliverFinalReport() {
-        logger.info("Closest creek ID: " + Drone.getClosestCreek());
-        return Drone.getClosestCreek();
+        logger.info("Closest creek ID: " + rescueDrone.getClosestCreek());
+        return rescueDrone.getClosestCreek();
     }
 
 }

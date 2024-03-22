@@ -2,72 +2,84 @@ package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
-public abstract class Drone implements DroneCommands {
+public class Drone {
 
-    @Override
-    public JSONObject fly() {
-        JSONObject decision = new JSONObject();
-        decision.put("action", "fly");
-        return decision;
+    private Information currentInformation = new Information(0, new JSONObject());
+    private AcknowledgeResults data;
+    private Battery batteryLevel; 
+    private Compass currentDirection;
+    private DecisionMaker findLandDecisionMaker;
+    private DecisionMaker gridSearchDecisionMaker;  
+    private boolean firstRun;
+    private boolean secondRun;
+    private DroneCommands droneCommand;
+
+    public Drone(Integer battery, Compass direction) {
+        //should I do this instead RescueDrone(Integer battery, Compass direction, DecisionMaker landDecisionMaker, DecisionMaker gridDecisionMaker)
+        this.currentDirection = direction;
+        int batteryInt = battery.intValue(); 
+        this.batteryLevel = new Battery(batteryInt);
+        this.firstRun = true;
+        this.secondRun = true;
+        this.findLandDecisionMaker = new FindLand(currentDirection); 
+        data = new AcknowledgeResults();
+        this.droneCommand = new DroneCommands();
     }
 
-    @Override
-    public JSONObject stop() {
-        JSONObject decision = new JSONObject();
-        decision.put("action", "stop");
-        return decision;
+    public void getInfo(Information info) {
+        this.currentInformation = info;
+        this.batteryLevel.decreaseBattery(info.getCost()); 
     }
 
-    @Override
-    public JSONObject scan() {
-        JSONObject decision = new JSONObject();
-        decision.put("action", "scan");
-        return decision;
+    public int getBatteryLevelDrone() {
+        return this.batteryLevel.getBatteryLevel();
     }
     
-    @Override
-    public JSONObject turnLeft(Compass currentDirection) {
-        JSONObject decision = new JSONObject();
-        currentDirection = currentDirection.left();
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
-        return decision;
+    public boolean batteryLevelWarning(){
+        if (getBatteryLevelDrone() <= 40){
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    @Override
-    public JSONObject turnRight(Compass currentDirection) {
-        JSONObject decision = new JSONObject();
-        currentDirection = currentDirection.right();
-        decision.put("action", "heading");
-        decision.put("parameters", new JSONObject().put("direction", currentDirection.toString()));
-        return decision;
+    public String getClosestCreek(){
+        return gridSearchDecisionMaker.getClosestCreek();
     }
 
-    @Override
-    public JSONObject echoTowards(Compass direction) {
-        JSONObject decision = new JSONObject();
-        String forward = direction.toString();
-        JSONObject forwardJ = new JSONObject().put("direction", forward);
-        decision.put("action", "echo").put("parameters", forwardJ);
-        return decision;
+    public void initializeGridSearch() {
+        if (secondRun == true && findLandDecisionMaker.missionToLand()){
+            this.gridSearchDecisionMaker = new GridSearch(findLandDecisionMaker.uTurnDirection(), findLandDecisionMaker.getCurrentDirection());
+            secondRun = false;
+        }
     }
 
-    @Override
-    public JSONObject echoLeft(Compass direction) {
-        JSONObject decision = new JSONObject();
-        String left = direction.left().toString();
-        JSONObject leftJ = new JSONObject().put("direction", left);
-        decision.put("action", "echo").put("parameters", leftJ);
-        return decision;
-    }
 
-    @Override
-    public JSONObject echoRight(Compass direction) {
-        JSONObject decision = new JSONObject();
-        String right = direction.right().toString();
-        JSONObject rightJ = new JSONObject().put("direction", right);
-        decision.put("action", "echo").put("parameters", rightJ);
-        return decision;
+    public Commands makeDecision() {
+        
+        Commands command;
+        data.initializeExtras(currentInformation);
+
+        if (firstRun){
+            findLandDecisionMaker.getInfo(currentInformation);
+            command = droneCommand.echoTowards(currentDirection);
+            firstRun = false;
+        } else if (!findLandDecisionMaker.missionToLand()) {
+            findLandDecisionMaker.getInfo(currentInformation);
+            command = findLandDecisionMaker.makeDecision();
+        } else if (findLandDecisionMaker.missionToLand()) {
+            initializeGridSearch();
+            gridSearchDecisionMaker.getInfo(currentInformation);
+            command = gridSearchDecisionMaker.makeDecision();
+        } else {
+            command = droneCommand.stop();
+        }
+
+        if (batteryLevelWarning()){
+            command = droneCommand.stop();
+        }
+
+        return command;
     }
 
 }

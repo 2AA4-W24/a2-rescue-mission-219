@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team219;
 
 public enum Compass {
 
-    N, S, E, W;
+    N, S, E, W, noDirection;
 
     public Compass left() {
         switch(this) {
@@ -10,7 +10,7 @@ public enum Compass {
             case S: return Compass.E;
             case E: return Compass.N;
             case W: return Compass.S;
-            default: return this;
+            default: return Compass.noDirection;
         }
     }
 
@@ -20,7 +20,7 @@ public enum Compass {
             case S: return Compass.W;
             case E: return Compass.S;
             case W: return Compass.N;
-            default: return this;
+            default: return Compass.noDirection;
         }
     }
 
@@ -31,7 +31,7 @@ public enum Compass {
             case S: return "S";
             case E: return "E";
             case W: return "W";
-            default: return "Direction";
+            default: return "noDirection";
         }
     }
     

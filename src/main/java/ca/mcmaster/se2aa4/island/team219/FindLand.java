@@ -2,7 +2,7 @@ package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
-public class FindLand extends Drone {
+public class FindLand implements DecisionMaker{
     
     private Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
@@ -15,6 +15,7 @@ public class FindLand extends Drone {
     private boolean turnedLeft;
     private boolean turnedRight;
     private boolean missionToLand; 
+    private DroneCommands droneCommand;
 
     public FindLand(Compass direction) {
         this.currentDirection = direction;
@@ -27,6 +28,7 @@ public class FindLand extends Drone {
         this.turnedRight = false;
         data = new AcknowledgeResults();
         this.distanceToLand = 0;
+        this.droneCommand = new DroneCommands();
     }
 
     @Override
@@ -34,14 +36,17 @@ public class FindLand extends Drone {
         this.currentInformation = info;
     }
 
+    @Override
     public String uTurnDirection() {
         return uTurnDirection;
     }
 
+    @Override
     public boolean missionToLand() {
         return missionToLand;
     }
 
+    @Override
     public Compass getCurrentDirection() {
         return currentDirection;
     }
@@ -51,24 +56,31 @@ public class FindLand extends Drone {
     }
 
 
-    private JSONObject turnLeftToLand() {
+    private Commands turnLeftToLand() {
         turnedLeft = true;
-        return turnLeft(currentDirection);
+        return droneCommand.turnLeft(currentDirection);
     }
 
-    private JSONObject turnRightToLand() {
+    private Commands turnRightToLand() {
         turnedRight = true;
-        return turnRight(currentDirection);
+        return droneCommand.turnRight(currentDirection);
+    }
+
+
+    @Override
+    public String getClosestCreek() {
+        return data.getClosestCreek();
     }
     
     @Override
-    public JSONObject makeDecision() {
+    public Commands makeDecision() {
 
-        JSONObject decision = new JSONObject();
+        Commands command;
+
         data.initializeExtras(currentInformation);
-        decision = state.stateChange(this);
+        command = state.stateChange(this);
 
-        if (decision.toString().contains("heading")) {
+        if (command.getValue().equals("heading")) {
 
             if (turnedRight == true) {
                 currentDirection = currentDirection.right();
@@ -86,31 +98,31 @@ public class FindLand extends Drone {
             uTurnDirection = "left";
         }
 
-        return decision;
+        return command;
     }
 
     
     private class StartingState implements FindLandState {
 
+        private Commands command;
+
         @Override
-        public JSONObject stateChange(FindLand drone) {
-            JSONObject decision = new JSONObject();
-            
+        public Commands stateChange(FindLand drone) {
             data.initializeExtras(currentInformation);
 
-            decision = echoTowards(currentDirection);
+            command = droneCommand.echoTowards(currentDirection);
             drone.switchState(new EchoForwardState());
-            return decision;
+            return command;
         } 
 
     }
 
     private class EchoForwardState implements FindLandState {
     
+        private Commands command;
+
         @Override
-        public JSONObject stateChange(FindLand drone) {
-    
-            JSONObject decision = new JSONObject();
+        public Commands stateChange(FindLand drone) {
             
             data.initializeExtras(currentInformation);
     
@@ -118,23 +130,23 @@ public class FindLand extends Drone {
                 drone.switchState(new TurnToLandState());
                 drone.distanceToLand = data.distance();
                 drone.distanceToLand--;
-                decision.put("action", "fly");
+                command = droneCommand.fly();
             } else if (!data.isFound()) {
                 drone.switchState(new EchoRightState());
-                decision = echoRight(currentDirection);
+                command = droneCommand.echoTowards(currentDirection.right());
             }
             
-            return decision;
+            return command;
         } 
         
     }
 
     private class EchoRightState implements FindLandState {
     
+        private Commands command;
+
         @Override
-        public JSONObject stateChange(FindLand drone) {
-    
-            JSONObject decision = new JSONObject();
+        public Commands stateChange(FindLand drone) {
 
             data.initializeExtras(currentInformation);
     
@@ -142,7 +154,7 @@ public class FindLand extends Drone {
                 drone.switchState(new TurnToLandState());
                 drone.distanceToLand = data.distance();
                 drone.distanceToLand--;
-                decision = drone.turnRightToLand();
+                command = drone.turnRightToLand();
             } else if (!data.isFound()) {
     
                 if (data.distance() <= 2) {
@@ -150,33 +162,33 @@ public class FindLand extends Drone {
                 }
     
                 drone.switchState(new EchoLeftState());
-                decision = echoLeft(currentDirection); 
+                command = droneCommand.echoTowards(currentDirection.left()); 
     
                 if (drone.dontEchoLeft) {
                     drone.switchState(new FlyForwardState());
-                    decision = fly();
+                    command = droneCommand.fly();
                 }
             }
             
-            return decision;
+            return command;
         } 
     
     }
 
     private class EchoLeftState implements FindLandState {
 
+        private Commands command;
     
         @Override
-        public JSONObject stateChange(FindLand drone) {
+        public Commands stateChange(FindLand drone) {
     
-            JSONObject decision = new JSONObject();
             data.initializeExtras(currentInformation);
     
             if (data.isFound()) {
                 drone.switchState(new TurnToLandState());
                 drone.distanceToLand = data.distance();
                 drone.distanceToLand--;
-                decision = drone.turnLeftToLand();
+                command = drone.turnLeftToLand();
             } else if (!data.isFound()) {
     
                 if (data.distance() <= 2) {
@@ -184,48 +196,49 @@ public class FindLand extends Drone {
                 }
     
                 drone.switchState(new FlyForwardState());
-                decision = fly();
+                command = droneCommand.fly();
     
             }
             
-            return decision;
+            return command;
         } 
     
     }
 
     private class FlyForwardState implements FindLandState {
     
+        private Commands command;
+
         @Override
-        public JSONObject stateChange(FindLand drone) {
-    
-            JSONObject decision = new JSONObject();
+        public Commands stateChange(FindLand drone) {
             
             data.initializeExtras(currentInformation);
     
             if (drone.dontEchoRight && !drone.dontEchoLeft) {
                 drone.switchState(new EchoLeftState());
-                decision = echoLeft(currentDirection);
+                command = droneCommand.echoTowards(currentDirection.left());
             } else {
                 drone.switchState(new EchoRightState());
-                decision = echoRight(currentDirection);
+                command = droneCommand.echoTowards(currentDirection.right());
             }
             
-            return decision;
+            return command;
         } 
     
     }
 
     private class TurnToLandState implements FindLandState {
 
-        @Override
-        public JSONObject stateChange(FindLand drone) {
+        private Commands command;
 
-            JSONObject decision = new JSONObject();
+        @Override
+        public Commands stateChange(FindLand drone) {
+
             data.initializeExtras(currentInformation);
 
-            decision = scan();
+            command = droneCommand.scan();
             drone.missionToLand = true;
-            return decision;
+            return command;
         } 
     
     }
