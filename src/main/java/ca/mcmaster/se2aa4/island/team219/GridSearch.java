@@ -234,7 +234,7 @@ public class GridSearch implements DecisionMaker{
 
         @Override
         public Commands stateChange(GridSearch drone) {
-            Commands command = new Commands("");
+            Commands command;
             data.initializeExtras(currentInformation);
     
             if (drone.range > 0) {
@@ -345,7 +345,7 @@ public class GridSearch implements DecisionMaker{
 
         @Override
         public Commands stateChange(GridSearch drone) {
-            Commands command = new Commands("");
+            Commands command;
             data.initializeExtras(currentInformation);
             
             if (drone.outOfRangeCounter == 2) {

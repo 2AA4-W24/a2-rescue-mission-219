@@ -107,7 +107,7 @@ public class FindLand implements DecisionMaker{
 
         @Override
         public Commands stateChange(FindLand drone) {
-            Commands command = new Commands("");
+            Commands command;
             data.initializeExtras(currentInformation);
 
             command = droneCommand.echoTowards(currentDirection);
@@ -203,7 +203,7 @@ public class FindLand implements DecisionMaker{
 
         @Override
         public Commands stateChange(FindLand drone) {
-            Commands command = new Commands("");
+            Commands command;
             data.initializeExtras(currentInformation);
     
             if (drone.dontEchoRight && !drone.dontEchoLeft) {
@@ -223,7 +223,7 @@ public class FindLand implements DecisionMaker{
 
         @Override
         public Commands stateChange(FindLand drone) {
-            Commands command = new Commands("");
+            Commands command;
             data.initializeExtras(currentInformation);
 
             command = droneCommand.scan();

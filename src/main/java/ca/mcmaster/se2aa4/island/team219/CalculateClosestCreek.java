@@ -13,7 +13,6 @@ public class CalculateClosestCreek {
     private int emergencyY;
     private int closestIndex = -1;
     private double minDistance = Double.MAX_VALUE;
-    private double distance = 0;
     
     public CalculateClosestCreek(List<Integer> listOfCreeksX, List<Integer> listOfCreeksY, List<String> creekIds, int emergencyX, int emergencyY) {
         this.listOfCreeksX = listOfCreeksX;
@@ -26,7 +25,7 @@ public class CalculateClosestCreek {
     public String calculateClosestCreek() {
 
         Set<String> visitedCoordinates = new HashSet<>();
-    
+        double distance = 0;
         for (int i = 0; i < listOfCreeksX.size(); i++) {
 
             int x = listOfCreeksX.get(i);
