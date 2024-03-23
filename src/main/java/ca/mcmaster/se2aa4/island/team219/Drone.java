@@ -15,7 +15,6 @@ public class Drone {
     protected DroneCommands droneCommand;  //made protected for JUnit testing purposes
 
     public Drone(Integer battery, Compass direction) {
-        //should I do this instead RescueDrone(Integer battery, Compass direction, DecisionMaker landDecisionMaker, DecisionMaker gridDecisionMaker)
         this.currentDirection = direction;
         int batteryInt = battery.intValue(); 
         this.batteryLevel = new Battery(batteryInt);
