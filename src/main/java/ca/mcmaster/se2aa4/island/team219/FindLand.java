@@ -9,13 +9,13 @@ public class FindLand implements DecisionMaker{
     private Compass currentDirection;
     private String uTurnDirection;
     private FindLandState state;
-    private int distanceToLand;
-    private boolean dontEchoRight;
-    private boolean dontEchoLeft;
-    private boolean turnedLeft;
-    private boolean turnedRight;
+    public int distanceToLand;
+    public boolean dontEchoRight;
+    public boolean dontEchoLeft;
+    public boolean turnedLeft;
+    public boolean turnedRight;
     private boolean missionToLand; 
-    private DroneCommands droneCommand;
+    public DroneCommands droneCommand;
 
     public FindLand(Compass direction) {
         this.currentDirection = direction;
@@ -36,6 +36,14 @@ public class FindLand implements DecisionMaker{
         this.currentInformation = info;
     }
 
+    public void setData(AcknowledgeResults data) {
+        this.data = data;
+    }
+
+    public String getStateName() {
+        return state.getClass().getSimpleName();
+    }
+
     @Override
     public String uTurnDirection() {
         return uTurnDirection;
@@ -51,7 +59,7 @@ public class FindLand implements DecisionMaker{
         return currentDirection;
     }
 
-    private void switchState(FindLandState state) {
+    public void switchState(FindLandState state) {
         this.state = state;
     }
 
@@ -102,7 +110,7 @@ public class FindLand implements DecisionMaker{
     }
 
     
-    private class StartingState implements FindLandState {
+    class StartingState implements FindLandState {
 
 
         @Override
@@ -117,7 +125,7 @@ public class FindLand implements DecisionMaker{
 
     }
 
-    private class EchoForwardState implements FindLandState {
+    class EchoForwardState implements FindLandState {
 
         @Override
         public Commands stateChange(FindLand drone) {
@@ -139,7 +147,7 @@ public class FindLand implements DecisionMaker{
         
     }
 
-    private class EchoRightState implements FindLandState {
+    class EchoRightState implements FindLandState {
 
         @Override
         public Commands stateChange(FindLand drone) {
@@ -171,7 +179,7 @@ public class FindLand implements DecisionMaker{
     
     }
 
-    private class EchoLeftState implements FindLandState {
+    class EchoLeftState implements FindLandState {
     
         @Override
         public Commands stateChange(FindLand drone) {
@@ -199,7 +207,7 @@ public class FindLand implements DecisionMaker{
     
     }
 
-    private class FlyForwardState implements FindLandState {
+    class FlyForwardState implements FindLandState {
 
         @Override
         public Commands stateChange(FindLand drone) {
@@ -219,7 +227,7 @@ public class FindLand implements DecisionMaker{
     
     }
 
-    private class TurnToLandState implements FindLandState {
+    class TurnToLandState implements FindLandState {
 
         @Override
         public Commands stateChange(FindLand drone) {
@@ -232,7 +240,5 @@ public class FindLand implements DecisionMaker{
         } 
     
     }
-
-
 
 }
