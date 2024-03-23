@@ -6,13 +6,13 @@ public class Drone {
 
     private Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
-    private Battery batteryLevel; 
+    public Battery batteryLevel; 
     private Compass currentDirection;
-    private DecisionMaker findLandDecisionMaker;
-    private DecisionMaker gridSearchDecisionMaker;  
-    private boolean firstRun;
-    private boolean secondRun;
-    private DroneCommands droneCommand;
+    public DecisionMaker findLandDecisionMaker;
+    public DecisionMaker gridSearchDecisionMaker;  
+    public boolean firstRun;
+    public boolean secondRun;
+    public DroneCommands droneCommand;
 
     public Drone(Integer battery, Compass direction) {
         //should I do this instead RescueDrone(Integer battery, Compass direction, DecisionMaker landDecisionMaker, DecisionMaker gridDecisionMaker)
