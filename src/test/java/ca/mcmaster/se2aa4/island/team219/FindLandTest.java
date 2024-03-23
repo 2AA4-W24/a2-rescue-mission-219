@@ -47,6 +47,20 @@ class FindLandTest {
     }
 
     @Test
+    public void testInitialState() {
+        assertEquals("StartingState", findLand.getStateName());
+        assertFalse(findLand.missionToLand());
+        assertEquals("left", findLand.uTurnDirection());
+        assertEquals("No creek found", findLand.getClosestCreek());
+    }
+
+    @Test
+    void testInvalidInitialState() {
+        assertNotEquals("FlyForwardState", findLand.getStateName(), "Initial state should not be FlyForwardState");
+        assertNotEquals("TurnToLandState", findLand.getStateName(), "Initial state should not be TurnToLandState");
+    }
+
+    @Test
     void makeDecision_StateChangeCalled() {
         FindLandState mockState = mock(FindLandState.class);
         when(mockState.stateChange(any())).thenReturn(new Commands("dummy"));
@@ -56,12 +70,13 @@ class FindLandTest {
         verify(mockState, times(1)).stateChange(findLand);
     }
 
-    @Test
-    public void testInitialState() {
-        assertEquals("StartingState", findLand.getStateName());
-        assertFalse(findLand.missionToLand());
-        assertEquals("left", findLand.uTurnDirection());
-        assertEquals("No creek found", findLand.getClosestCreek());
+    private AcknowledgeResults createAcknowledgeResults(boolean found, int distance) {
+        AcknowledgeResults data = new AcknowledgeResults();
+        JSONObject extras = new JSONObject();
+        extras.put("found", found ? "GROUND" : "OUT_OF_RANGE");
+        extras.put("range", distance);
+        data.initializeExtras(new Information(0, extras));
+        return data;
     }
 
     @Test
@@ -101,15 +116,6 @@ class FindLandTest {
         command = findLand.makeDecision();
         assertEquals("fly", command.getValue());
         assertEquals("FlyForwardState", findLand.getStateName());
-    }
-
-    private AcknowledgeResults createAcknowledgeResults(boolean found, int distance) {
-        AcknowledgeResults data = new AcknowledgeResults();
-        JSONObject extras = new JSONObject();
-        extras.put("found", found ? "GROUND" : "OUT_OF_RANGE");
-        extras.put("range", distance);
-        data.initializeExtras(new Information(0, extras));
-        return data;
     }
 
     @Test
@@ -173,12 +179,6 @@ class FindLandTest {
         Commands command = findLand.makeDecision();
         assertEquals("echo", command.getValue());
         assertEquals("EchoRightState", findLand.getStateName());
-    }
-
-    @Test
-    void testInvalidInitialState() {
-        assertNotEquals("FlyForwardState", findLand.getStateName(), "Initial state should not be FlyForwardState");
-        assertNotEquals("TurnToLandState", findLand.getStateName(), "Initial state should not be TurnToLandState");
     }
 
     @Test
