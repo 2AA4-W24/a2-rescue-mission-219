@@ -9,19 +9,19 @@ public class GridSearch implements DecisionMaker{
     private Compass currentDirection;
     private VirtualCoordinateMap map;
     private GridSearchState state;
-    private String uTurnDirection;
-    private int outOfRangeCounter;
-    private int islandHalvesExplored; 
-    private int uTurns;
-    private int originalX;
-    private int originalY;
-    private int range;
-    private int distanceToOOB;
-    private boolean firstRun;
-    private boolean checkedForSite;
-    private boolean turnedRight;
-    private boolean turnedLeft;
-    private DroneCommands droneCommand;
+    public String uTurnDirection;
+    public int outOfRangeCounter;
+    public int islandHalvesExplored; 
+    public int uTurns;
+    public int originalX;
+    public int originalY;
+    public int range;
+    public int distanceToOOB;
+    public boolean firstRun;
+    public boolean checkedForSite;
+    public boolean turnedRight;
+    public boolean turnedLeft;
+    public DroneCommands droneCommand;
 
     public GridSearch(String uTurnDirection, Compass direction) {
         this.state = new ScanState();
@@ -45,6 +45,14 @@ public class GridSearch implements DecisionMaker{
     @Override
     public void getInfo(Information info) {
         this.currentInformation = info;
+    }
+    
+    public GridSearchState getState() {
+        return state;
+    }
+    
+    public void setData(AcknowledgeResults data) {
+        this.data = data;
     }
     
     public void switchState(GridSearchState state) {
@@ -146,7 +154,7 @@ public class GridSearch implements DecisionMaker{
         return command;
     }
 
-    private class BigUTurnState implements GridSearchState {
+    class BigUTurnState implements GridSearchState {
 
         @Override
         public Commands stateChange(GridSearch drone) {
@@ -206,7 +214,7 @@ public class GridSearch implements DecisionMaker{
         } 
     }
 
-    private class EchoState implements GridSearchState {
+    class EchoState implements GridSearchState {
 
         @Override
         public Commands stateChange(GridSearch drone) {
@@ -230,7 +238,7 @@ public class GridSearch implements DecisionMaker{
         } 
     }    
 
-    public class FlyState implements GridSearchState {
+    class FlyState implements GridSearchState {
 
         @Override
         public Commands stateChange(GridSearch drone) {
@@ -252,7 +260,7 @@ public class GridSearch implements DecisionMaker{
         
     }
 
-    public class FlyToEndState implements GridSearchState {
+    class FlyToEndState implements GridSearchState {
 
         @Override
         public Commands stateChange(GridSearch drone) {
@@ -285,7 +293,7 @@ public class GridSearch implements DecisionMaker{
     
     }
     
-    public class FlyToUTurnState implements GridSearchState {
+    class FlyToUTurnState implements GridSearchState {
     
         @Override
         public Commands stateChange(GridSearch drone) {
@@ -318,7 +326,7 @@ public class GridSearch implements DecisionMaker{
         
     }
     
-    public class ScanState implements GridSearchState {
+    class ScanState implements GridSearchState {
 
         private AcknowledgeResults data = new AcknowledgeResults();
     
@@ -341,7 +349,7 @@ public class GridSearch implements DecisionMaker{
         
     }
     
-    public class SecondEchoState implements GridSearchState {
+    class SecondEchoState implements GridSearchState {
 
         @Override
         public Commands stateChange(GridSearch drone) {
@@ -361,7 +369,7 @@ public class GridSearch implements DecisionMaker{
         
     }
     
-    public class UTurnState implements GridSearchState {
+    class UTurnState implements GridSearchState {
 
         @Override
         public Commands stateChange(GridSearch drone) {
