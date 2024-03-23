@@ -9,14 +9,10 @@ public class Commands {
 
     public Commands(String value) {
         this.value = value;
-        //value can = stop, scan, fly
-        
     }
 
     public Commands(String value, Compass currentDirection) {
         this.value = value;
-        //if value = heading, turn
-        //if value = echo, echo
         this.currentDirection = currentDirection;
     }
 
