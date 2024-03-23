@@ -9,13 +9,13 @@ public class FindLand implements DecisionMaker{
     private Compass currentDirection;
     private String uTurnDirection;
     private FindLandState state;
-    public int distanceToLand;
-    public boolean dontEchoRight;
-    public boolean dontEchoLeft;
-    public boolean turnedLeft;
-    public boolean turnedRight;
+    protected int distanceToLand;
+    protected boolean dontEchoRight;
+    protected boolean dontEchoLeft;
+    protected boolean turnedLeft;
+    protected boolean turnedRight;
     private boolean missionToLand; 
-    public DroneCommands droneCommand;
+    protected DroneCommands droneCommand;
 
     public FindLand(Compass direction) {
         this.currentDirection = direction;
@@ -36,11 +36,11 @@ public class FindLand implements DecisionMaker{
         this.currentInformation = info;
     }
 
-    public void setData(AcknowledgeResults data) {
+    protected void setData(AcknowledgeResults data) {
         this.data = data;
     }
 
-    public String getStateName() {
+    protected String getStateName() {
         return state.getClass().getSimpleName();
     }
 

@@ -9,19 +9,19 @@ public class GridSearch implements DecisionMaker{
     private Compass currentDirection;
     private VirtualCoordinateMap map;
     private GridSearchState state;
-    public String uTurnDirection;
-    public int outOfRangeCounter;
-    public int islandHalvesExplored; 
-    public int uTurns;
-    public int originalX;
-    public int originalY;
-    public int range;
-    public int distanceToOOB;
-    public boolean firstRun;
-    public boolean checkedForSite;
-    public boolean turnedRight;
-    public boolean turnedLeft;
-    public DroneCommands droneCommand;
+    protected String uTurnDirection;
+    protected int outOfRangeCounter;
+    protected int islandHalvesExplored; 
+    protected int uTurns;
+    protected int originalX;
+    protected int originalY;
+    protected int range;
+    protected int distanceToOOB;
+    protected boolean firstRun;
+    protected boolean checkedForSite;
+    protected boolean turnedRight;
+    protected boolean turnedLeft;
+    protected DroneCommands droneCommand;
 
     public GridSearch(String uTurnDirection, Compass direction) {
         this.state = new ScanState();
@@ -47,15 +47,15 @@ public class GridSearch implements DecisionMaker{
         this.currentInformation = info;
     }
     
-    public GridSearchState getState() {
+    protected GridSearchState getState() {
         return state;
     }
     
-    public void setData(AcknowledgeResults data) {
+    protected void setData(AcknowledgeResults data) {
         this.data = data;
     }
     
-    public void switchState(GridSearchState state) {
+    protected void switchState(GridSearchState state) {
         this.state = state;
     }
 
