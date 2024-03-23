@@ -9,13 +9,13 @@ public class FindLand implements DecisionMaker{
     private Compass currentDirection;
     private String uTurnDirection;
     private FindLandState state;
-    protected int distanceToLand;
-    protected boolean dontEchoRight;
-    protected boolean dontEchoLeft;
-    protected boolean turnedLeft;
-    protected boolean turnedRight;
+    protected int distanceToLand;  //made protected for JUnit testing purposes
+    protected boolean dontEchoRight;  //made protected for JUnit testing purposes
+    protected boolean dontEchoLeft;  //made protected for JUnit testing purposes
+    protected boolean turnedLeft;  //made protected for JUnit testing purposes
+    protected boolean turnedRight;  //made protected for JUnit testing purposes
     private boolean missionToLand; 
-    protected DroneCommands droneCommand;
+    protected DroneCommands droneCommand;  //made protected for JUnit testing purposes
 
     public FindLand(Compass direction) {
         this.currentDirection = direction;
@@ -36,11 +36,11 @@ public class FindLand implements DecisionMaker{
         this.currentInformation = info;
     }
 
-    protected void setData(AcknowledgeResults data) {
+    protected void setData(AcknowledgeResults data) {  //made protected for JUnit testing purposes
         this.data = data;
     }
-
-    protected String getStateName() {
+ 
+    protected String getStateName() {  //made protected for JUnit testing purposes
         return state.getClass().getSimpleName();
     }
 

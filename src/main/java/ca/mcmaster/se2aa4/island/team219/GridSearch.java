@@ -9,19 +9,19 @@ public class GridSearch implements DecisionMaker{
     private Compass currentDirection;
     private VirtualCoordinateMap map;
     private GridSearchState state;
-    protected String uTurnDirection;
-    protected int outOfRangeCounter;
-    protected int islandHalvesExplored; 
-    protected int uTurns;
-    protected int originalX;
-    protected int originalY;
-    protected int range;
-    protected int distanceToOOB;
-    protected boolean firstRun;
-    protected boolean checkedForSite;
-    protected boolean turnedRight;
-    protected boolean turnedLeft;
-    protected DroneCommands droneCommand;
+    protected String uTurnDirection;  //made protected for JUnit testing purposes
+    protected int outOfRangeCounter;  //made protected for JUnit testing purposes
+    protected int islandHalvesExplored;  //made protected for JUnit testing purposes
+    protected int uTurns;  //made protected for JUnit testing purposes
+    protected int originalX;  //made protected for JUnit testing purposes
+    protected int originalY;  //made protected for JUnit testing purposes
+    protected int range;  //made protected for JUnit testing purposes
+    protected int distanceToOOB;  //made protected for JUnit testing purposes
+    protected boolean firstRun;  //made protected for JUnit testing purposes
+    protected boolean checkedForSite;  //made protected for JUnit testing purposes
+    protected boolean turnedRight;  //made protected for JUnit testing purposes
+    protected boolean turnedLeft;  //made protected for JUnit testing purposes
+    protected DroneCommands droneCommand;  //made protected for JUnit testing purposes
 
     public GridSearch(String uTurnDirection, Compass direction) {
         this.state = new ScanState();
@@ -47,15 +47,15 @@ public class GridSearch implements DecisionMaker{
         this.currentInformation = info;
     }
     
-    protected GridSearchState getState() {
+    protected GridSearchState getState() {  //made protected for JUnit testing purposes
         return state;
     }
     
-    protected void setData(AcknowledgeResults data) {
+    protected void setData(AcknowledgeResults data) {  //made protected for JUnit testing purposes
         this.data = data;
     }
     
-    protected void switchState(GridSearchState state) {
+    protected void switchState(GridSearchState state) {  //made protected for JUnit testing purposes
         this.state = state;
     }
 

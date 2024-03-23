@@ -6,13 +6,13 @@ public class Drone {
 
     private Information currentInformation = new Information(0, new JSONObject());
     private AcknowledgeResults data;
-    public Battery batteryLevel; 
-    private Compass currentDirection;
-    public DecisionMaker findLandDecisionMaker;
-    public DecisionMaker gridSearchDecisionMaker;  
-    public boolean firstRun;
-    public boolean secondRun;
-    public DroneCommands droneCommand;
+    protected Battery batteryLevel;  //made protected for JUnit testing purposes
+    private Compass currentDirection; 
+    protected DecisionMaker findLandDecisionMaker;  //made protected for JUnit testing purposes
+    protected DecisionMaker gridSearchDecisionMaker;  //made protected for JUnit testing purposes
+    protected boolean firstRun;  //made protected for JUnit testing purposes
+    protected boolean secondRun;  //made protected for JUnit testing purposes
+    protected DroneCommands droneCommand;  //made protected for JUnit testing purposes
 
     public Drone(Integer battery, Compass direction) {
         //should I do this instead RescueDrone(Integer battery, Compass direction, DecisionMaker landDecisionMaker, DecisionMaker gridDecisionMaker)
