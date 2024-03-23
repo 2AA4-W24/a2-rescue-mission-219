@@ -2,21 +2,24 @@ package ca.mcmaster.se2aa4.island.team219;
 
 public class Battery {
 
-    private int batteryLevel;
+    private int battery;
 
     public Battery(int battery) {
-        this.batteryLevel = battery;
+        this.battery = battery;
     }
 
     public int getBatteryLevel() {
-        return batteryLevel;
+        return battery;
     }
 
     public void decreaseBattery(int cost) {
-        batteryLevel = batteryLevel - cost;
+        battery = battery - cost;
     }
 
     public boolean batteryLevelLow() {
-        return this.batteryLevel <= 40; //asuming stoping requires this amount or less
+        if (this.battery <= 40) { //asuming stoping requires this amount or less
+            return true;
+        }
+        return false;
     }
 }

@@ -3,7 +3,7 @@ package ca.mcmaster.se2aa4.island.team219;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CompassTest {
+class CompassTest {
     
     private Compass direction;
 
@@ -77,6 +77,24 @@ public class CompassTest {
     void testDirectionToStringW() {
         direction = Compass.W;
         assertEquals("W", direction.toString(), "The string representation of West should be 'W'.");
+    }
+
+    @Test
+    void testTurnLeftFromNoDirection() {
+        direction = Compass.NONE;
+        assertEquals(Compass.NONE, direction.left(), "Turning left from noDirection should remain noDirection.");
+    }
+
+    @Test
+    void testTurnRightFromNoDirection() {
+        direction = Compass.NONE;
+        assertEquals(Compass.NONE, direction.right(), "Turning right from noDirection should remain noDirection.");
+    }
+
+    @Test
+    void testToStringNoDirection() {
+        direction = Compass.NONE;
+        assertEquals("NONE", direction.toString(), "The string representation of noDirection should be 'noDirection'.");
     }
 
 }

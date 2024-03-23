@@ -3,7 +3,7 @@ package ca.mcmaster.se2aa4.island.team219;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BatteryTest {
+class BatteryTest {
 
     @Test
     void testGetBatteryLevel() {

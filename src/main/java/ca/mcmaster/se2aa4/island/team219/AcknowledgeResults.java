@@ -6,18 +6,21 @@ import java.util.ArrayList;
 
 public class AcknowledgeResults {
 
+    private boolean landFound = false;
     private boolean groundFound = false;
+    private boolean nothingFound = false;
+    private boolean creekFound = false;
     private boolean emergencySiteFound = false;
     private ArrayList<Integer> listOfCreeksX = new ArrayList<>();
     private ArrayList<Integer> listOfCreeksY = new ArrayList<>();
     private int emergencyX = 0;
     private int emergencyY = 0;
+    private CalculateClosestCreek closestCreekID;
     private JSONObject extras;
-    private String foundString = "found";
-    public ArrayList<String> creekIds = new ArrayList<>(); // make private and add getter for test
+    public ArrayList<String> creekIds = new ArrayList<>();
 
     public void initializeExtras(Information info) {
-        if (info != null){
+        if (!(info == null)){
             extras = info.getExtrasJson();
         } else {
             extras = new JSONObject();
@@ -25,9 +28,8 @@ public class AcknowledgeResults {
     }
 
     public boolean isFound() {
-        boolean landFound;
-        if (extras.has(foundString)){
-            String found = extras.getString(foundString);
+        if (extras.has("found")){
+            String found = extras.getString("found");
             landFound = "GROUND".equals(found);
         } else {
             landFound = false;
@@ -36,14 +38,13 @@ public class AcknowledgeResults {
     }
 
     public boolean outOfBounds() {
-        boolean nothingFound;
-        if (extras.has(foundString)){
-            String found = extras.getString(foundString);
+        if (extras.has("found")){
+            String found = extras.getString("found");
             nothingFound = "OUT_OF_RANGE".equals(found);
         } else {
             nothingFound = false;
         }
-        if (nothingFound){
+        if (nothingFound == true){
             if (this.distance() < 2){
                 nothingFound = true;
             } else {
@@ -74,7 +75,6 @@ public class AcknowledgeResults {
     }
     
     public boolean creekIsFound() {
-        boolean creekFound;
         if (extras.has("creeks")) {
             JSONArray creeksArray = extras.getJSONArray("creeks");
             if (creeksArray.length() == 0) {
@@ -119,8 +119,7 @@ public class AcknowledgeResults {
     }
 
     public String getClosestCreek() { 
-        CalculateClosestCreek closestCreekID;
-        closestCreekID = new CalculateClosestCreek(listOfCreeksX, listOfCreeksY, creekIds, emergencyX, emergencyY);   
+        this.closestCreekID = new CalculateClosestCreek(listOfCreeksX, listOfCreeksY, creekIds, emergencyX, emergencyY);   
         return closestCreekID.calculateClosestCreek();
     }
 
