@@ -2,22 +2,87 @@ package ca.mcmaster.se2aa4.island.team219;
 
 import org.json.JSONObject;
 
-import netscape.javascript.JSObject;
+public class Drone {
+
+    private Information currentInformation = new Information(0, new JSONObject());
+    private AcknowledgeResults data;
+    protected Battery batteryLevel;  //made protected for JUnit testing purposes
+    private Compass currentDirection; 
+    protected DecisionMaker findLandDecisionMaker;  //made protected for JUnit testing purposes
+    protected DecisionMaker gridSearchDecisionMaker;  //made protected for JUnit testing purposes
+    protected boolean firstRun;  //made protected for JUnit testing purposes
+    protected boolean secondRun;  //made protected for JUnit testing purposes
+    protected DroneCommands droneCommand;  //made protected for JUnit testing purposes
+    private double initialBatteryLevel;
+
+    public Drone(Integer battery, Compass direction) {
+        this.currentDirection = direction;
+        int batteryInt = battery.intValue(); 
+        this.batteryLevel = new Battery(batteryInt);
+        this.firstRun = true;
+        this.secondRun = true;
+        this.findLandDecisionMaker = new FindLand(currentDirection); 
+        data = new AcknowledgeResults();
+        this.droneCommand = new DroneCommands();
+        this.initialBatteryLevel = 0;
+    }
+
+    public void getInfo(Information info) {
+        this.currentInformation = info;
+        this.batteryLevel.decreaseBattery(info.getCost()); 
+    }
+
+    public int getBatteryLevelDrone() {
+        return this.batteryLevel.getBatteryLevel();
+    }
+    
+    public boolean batteryLevelWarning(){
+        if ((initialBatteryLevel*0.002) <= 40) {
+            return getBatteryLevelDrone() <= 40;
+        } else {
+            return getBatteryLevelDrone() <= (initialBatteryLevel*0.002);
+        }
+    }
+
+    public String getClosestCreek(){
+        return gridSearchDecisionMaker.getClosestCreek();
+    }
+
+    public void initializeGridSearch() {
+        if (secondRun && findLandDecisionMaker.missionToLand()){
+            this.gridSearchDecisionMaker = new GridSearch(findLandDecisionMaker.uTurnDirection(), findLandDecisionMaker.getCurrentDirection());
+            
+            secondRun = false;
+        }
+    }
 
 
-public interface Drone {
-    void getInfo(Information info);
-    int getBatteryLevelDrone();
-    JSONObject makeDecision();
-    JSONObject turn(Turn direction);
-    JSONObject turnLeft();
-    JSONObject turnRight();
-    JSONObject echoInAllDirections();
-    JSONObject echoTowards(Turn direction);
-    JSONObject echoLeft(Turn direction);
-    JSONObject echoRight(Turn direction);
-    JSONObject toLand();
-    JSONObject fly();
-    JSONObject stop();
-    JSONObject scan();
+    public Commands makeDecision() {
+        
+        Commands command;
+        data.initializeExtras(currentInformation);
+
+        if (firstRun){
+            initialBatteryLevel = getBatteryLevelDrone();
+            findLandDecisionMaker.getInfo(currentInformation);
+            command = droneCommand.echoTowards(currentDirection);
+            firstRun = false;
+        } else if (!findLandDecisionMaker.missionToLand()) {
+            findLandDecisionMaker.getInfo(currentInformation);
+            command = findLandDecisionMaker.makeDecision();
+        } else if (findLandDecisionMaker.missionToLand()) {
+            initializeGridSearch();
+            gridSearchDecisionMaker.getInfo(currentInformation);
+            command = gridSearchDecisionMaker.makeDecision();
+        } else {
+            command = droneCommand.stop();
+        }
+
+        if (batteryLevelWarning()){
+            command = droneCommand.stop();
+        }
+
+        return command;
+    }
+
 }

@@ -1,7 +1,6 @@
 package ca.mcmaster.se2aa4.island.team219;
 
 import static eu.ace_design.island.runner.Runner.run;
-
 import java.io.File;
 
 public class Runner {
@@ -12,8 +11,8 @@ public class Runner {
             run(Explorer.class)
                     .exploring(new File(filename))
                     .withSeed(42L)
-                    .startingAt(1, 1, "EAST")
-                    .backBefore(7000)
+                    .startingAt(120, 1, "WEST")
+                    .backBefore(30000)
                     .withCrew(5)
                     .collecting(1000, "WOOD")
                     .storingInto("./outputs")

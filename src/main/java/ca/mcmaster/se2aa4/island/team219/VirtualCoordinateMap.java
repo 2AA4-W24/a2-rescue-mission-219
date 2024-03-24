@@ -1,13 +1,15 @@
 package ca.mcmaster.se2aa4.island.team219;
 
 public class VirtualCoordinateMap {
-    
-    private int x = 0;
-    private int y = 0;
-    private Turn currentDirection;
 
-    public VirtualCoordinateMap(Turn direction) {
+    private int x;
+    private int y;
+    private Compass currentDirection;
+
+    public VirtualCoordinateMap(Compass direction, int x, int y) {
         this.currentDirection = direction;
+        this.x = x;
+        this.y = y;
     }
 
     public void moveForward() {
@@ -77,16 +79,12 @@ public class VirtualCoordinateMap {
         currentDirection = currentDirection.right();
     }
 
-    public String getCurrentPosition() {
-        return "("  +x+  ","  +y+  ")";
+    public int getCurrentX() {
+        return x;
     }
 
-    void storeCoordinates() { // will use later
-        //store important coordinates (creeks, emergency site) 
-    }
-
-    void calculateDistance() { // will use later
-        //calculate distance between creeks and emergency site
+    public int getCurrentY() {
+        return y;
     }
     
 }

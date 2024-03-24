@@ -3,7 +3,6 @@ package ca.mcmaster.se2aa4.island.team219;
 import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -12,17 +11,11 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private Translator translator = new Translator();
-
     private final Logger logger = LogManager.getLogger();
-
-    private Turn currentDirection; 
-
-    private DroneController Drone;
-
+    private Compass currentDirection; 
+    private Drone rescueDrone;
+    private HeadingTranslator headingTranslator = new HeadingTranslator();
     public JSONObject extras;
-
-    private Information info;
-
 
     @Override
     public void initialize(String s) {
@@ -33,10 +26,9 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
-        currentDirection = Turn.E;
-        Drone = new DroneController(batteryLevel, currentDirection);
+        currentDirection = headingTranslator.translateDirection(direction);
+        rescueDrone = new Drone(batteryLevel, currentDirection);
         logger.info("finished initializing");
-        
     }
 
     @Override
@@ -51,24 +43,23 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         extras = extraInfo; 
         logger.info("Additional information received: {}", extraInfo); 
-        Drone.getInfo(info);
+        rescueDrone.getInfo(info);
     }
 
     @Override
     public String takeDecision() {
-        JSONObject decision = new JSONObject();
-        decision = Drone.makeDecision();
-        logger.info("The new battery level is " + Drone.getBatteryLevelDrone());
+        JSONObject decision;
+        Commands command = rescueDrone.makeDecision();
+        decision = command.commandTranslator();
+        logger.info("The new battery level is " + rescueDrone.getBatteryLevelDrone());
         logger.info(decision.toString());
         return decision.toString();
     }
 
-
-    
-
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        logger.info("Closest creek ID: " + rescueDrone.getClosestCreek());
+        return rescueDrone.getClosestCreek();
     }
 
 }
