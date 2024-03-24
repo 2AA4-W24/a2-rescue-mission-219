@@ -17,9 +17,6 @@ public class Battery {
     }
 
     public boolean batteryLevelLow() {
-        if (this.battery <= 40) { //asuming stoping requires this amount or less
-            return true;
-        }
-        return false;
+        return this.battery <= 40; //asuming stoping requires this amount or less
     }
 }

@@ -13,6 +13,7 @@ public class Drone {
     protected boolean firstRun;  //made protected for JUnit testing purposes
     protected boolean secondRun;  //made protected for JUnit testing purposes
     protected DroneCommands droneCommand;  //made protected for JUnit testing purposes
+    private double initialBatteryLevel;
 
     public Drone(Integer battery, Compass direction) {
         this.currentDirection = direction;
@@ -23,6 +24,7 @@ public class Drone {
         this.findLandDecisionMaker = new FindLand(currentDirection); 
         data = new AcknowledgeResults();
         this.droneCommand = new DroneCommands();
+        this.initialBatteryLevel = 0;
     }
 
     public void getInfo(Information info) {
@@ -35,7 +37,11 @@ public class Drone {
     }
     
     public boolean batteryLevelWarning(){
-        return getBatteryLevelDrone() <= 40;
+        if ((initialBatteryLevel*0.002) <= 40) {
+            return getBatteryLevelDrone() <= 40;
+        } else {
+            return getBatteryLevelDrone() <= (initialBatteryLevel*0.002);
+        }
     }
 
     public String getClosestCreek(){
@@ -45,6 +51,7 @@ public class Drone {
     public void initializeGridSearch() {
         if (secondRun && findLandDecisionMaker.missionToLand()){
             this.gridSearchDecisionMaker = new GridSearch(findLandDecisionMaker.uTurnDirection(), findLandDecisionMaker.getCurrentDirection());
+            
             secondRun = false;
         }
     }
@@ -56,6 +63,7 @@ public class Drone {
         data.initializeExtras(currentInformation);
 
         if (firstRun){
+            initialBatteryLevel = getBatteryLevelDrone();
             findLandDecisionMaker.getInfo(currentInformation);
             command = droneCommand.echoTowards(currentDirection);
             firstRun = false;

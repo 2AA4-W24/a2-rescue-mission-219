@@ -15,7 +15,6 @@ public class AcknowledgeResults {
     private ArrayList<Integer> listOfCreeksY = new ArrayList<>();
     private int emergencyX = 0;
     private int emergencyY = 0;
-    private CalculateClosestCreek closestCreekID;
     private JSONObject extras;
     public ArrayList<String> creekIds = new ArrayList<>();
 
@@ -119,7 +118,8 @@ public class AcknowledgeResults {
     }
 
     public String getClosestCreek() { 
-        this.closestCreekID = new CalculateClosestCreek(listOfCreeksX, listOfCreeksY, creekIds, emergencyX, emergencyY);   
+        CalculateClosestCreek closestCreekID;
+        closestCreekID = new CalculateClosestCreek(listOfCreeksX, listOfCreeksY, creekIds, emergencyX, emergencyY);   
         return closestCreekID.calculateClosestCreek();
     }
 
