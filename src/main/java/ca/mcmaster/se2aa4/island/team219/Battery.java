@@ -16,7 +16,4 @@ public class Battery {
         battery = battery - cost;
     }
 
-    public boolean batteryLevelLow() {
-        return this.battery <= 40; //asuming stoping requires this amount or less
-    }
 }

@@ -19,16 +19,4 @@ class BatteryTest {
         assertEquals(80, battery.getBatteryLevel(), "Decreasing the battery by 20 should result in a battery level of 80.");
     }
 
-    @Test
-    void testBatteryLevelLowFalse() {
-        Battery battery = new Battery(50);
-        assertFalse(battery.batteryLevelLow(), "Battery level at 50 should not be considered low.");
-    }
-
-    @Test
-    void testBatteryLevelLowTrue() {
-        Battery battery = new Battery(30);
-        assertTrue(battery.batteryLevelLow(), "Battery level at or below 30 should be considered low."); 
-    }
-
 }
